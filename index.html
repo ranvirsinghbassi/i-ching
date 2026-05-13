@@ -10,24 +10,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        *, *::before, *::after {
-            box-sizing: border-box;
-        }
+        *, *::before, *::after { box-sizing: border-box; }
 
         :root {
             --bg-white: #FFFFFF;
             --text-black: #1A1A1A;
-            --vibrant-blue: #0044D6; 
-            --subtle-shadow: 0 -4px 30px rgba(0, 0, 0, 0.06);
-            
-            --pen-stroke-black: rgba(26, 26, 26, 0.95); 
-            --pen-stroke-blue: rgba(0, 68, 214, 0.95);
+            --vibrant-blue: #0044D6;
+            --vibrant-red: #D60036;
+            --blue-red-split: linear-gradient(90deg, var(--vibrant-blue) 50%, var(--vibrant-red) 50%);
+            --pen-stroke-black: rgba(26, 26, 26, 0.95);
         }
 
         body {
             font-family: 'Caveat', cursive;
-            background-color: #FAFAFA;
-            color: var(--text-black);
+            background-color: #FAFAFA; 
             margin: 0;
             padding: 0;
             display: flex;
@@ -47,8 +43,16 @@
             z-index: 1; 
         }
 
+        /* --- THE COLOR SPLIT TARGETS --- */
+        h1, .reading-title, .ai-loading, .text-btn, .tts-word.active {
+            background: var(--blue-red-split);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+        }
+
         h1 {
-            color: var(--vibrant-blue);
             font-size: clamp(3rem, 8vw, 4.5rem);
             letter-spacing: 0.05em;
             margin-bottom: -0.5rem; 
@@ -56,10 +60,10 @@
         }
 
         .subtitle {
-            color: #666;
             font-size: clamp(1.4rem, 4vw, 1.8rem);
             font-weight: 500;
             letter-spacing: 0.05em;
+            color: #666;
         }
 
         .oracle-container {
@@ -71,11 +75,11 @@
             margin: clamp(10rem, 25vw, 14rem) auto 4rem auto; 
             padding: clamp(2.5rem, 6vw, 4rem) clamp(1.5rem, 5vw, 2.5rem);
             border-radius: 15px 225px 12px 255px / 255px 12px 225px 15px;
-            box-shadow: var(--subtle-shadow);
+            box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.06);
             text-align: center;
+            transition: all 0.4s ease;
         }
 
-        /* --- Question Input Area --- */
         .question-section {
             display: flex;
             flex-direction: column;
@@ -87,35 +91,34 @@
 
         .question-label {
             font-size: clamp(1.8rem, 5vw, 2.2rem);
-            color: var(--text-black);
             margin-bottom: 1rem;
             font-weight: 600;
+            color: var(--text-black);
+        }
+
+        /* Border Gradients for Inputs and Coins */
+        .question-input, .coin, .symbol-yin, .symbol-blank, .tts-btn {
+            border-color: transparent !important;
+            background: linear-gradient(var(--bg-white), var(--bg-white)) padding-box,
+                        var(--blue-red-split) border-box;
         }
 
         .question-input {
             width: 100%;
             font-family: 'Caveat', cursive;
             font-size: clamp(1.4rem, 4vw, 1.8rem);
-            color: var(--vibrant-blue);
-            background-color: transparent;
+            color: var(--text-black);
             padding: 1rem 1.5rem;
             margin-bottom: 2rem;
             resize: none;
             outline: none;
             border-style: solid;
-            border-color: rgba(0, 68, 214, 0.3);
             border-width: 1.5px 2px 2.5px 1px;
             border-radius: 15px 225px 15px 255px / 255px 15px 225px 15px;
-            transition: border-color 0.3s ease;
+            transition: transform 0.3s ease;
         }
 
-        .question-input:focus {
-            border-color: var(--vibrant-blue);
-        }
-
-        .question-input::placeholder {
-            color: rgba(0, 68, 214, 0.3);
-        }
+        .question-input::placeholder { color: #999; }
 
         #toss-section {
             display: none;
@@ -127,7 +130,6 @@
 
         .ai-loading {
             display: none;
-            color: var(--vibrant-blue);
             font-size: 1.8rem;
             margin: 2rem 0;
             font-weight: 600;
@@ -146,13 +148,19 @@
         }
 
         .hexagram-display {
-            display: flex;
+            display: none; 
             flex-direction: column-reverse;
             align-items: center;
             gap: clamp(10px, 3vw, 14px);
             margin: 0 auto 3.5rem auto;
-            min-height: 140px;
+            min-height: 200px;
             width: 100%;
+        }
+
+        #active-area.has-history {
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            padding-top: 2rem;
+            margin-top: 1rem;
         }
 
         .yao-line {
@@ -181,8 +189,9 @@
             transition: stroke 0.4s ease;
         }
 
-        .yao-line.changing .pen-path {
-            stroke: var(--pen-stroke-blue);
+        /* SVG Gradient Application */
+        .yao-line.changing .pen-path, .tts-icon {
+            stroke: url(#blueRedSplitGrad);
         }
 
         @keyframes slideUpFade {
@@ -200,7 +209,6 @@
             gap: clamp(1.2rem, 5vw, 2.5rem);
             margin-bottom: 3.5rem;
             min-height: 70px;
-            /* Added perspective to make the 3D tumble look deep and realistic */
             perspective: 800px;
         }
 
@@ -208,37 +216,25 @@
             width: clamp(50px, 15vw, 64px);
             height: clamp(50px, 15vw, 64px);
             border-style: solid;
-            border-color: var(--vibrant-blue);
             border-width: 2px 1.5px 2.5px 1.5px; 
             border-radius: 47% 53% 51% 49% / 52% 48% 53% 47%;
-            background: var(--bg-white);
             display: flex;
             align-items: center;
             justify-content: center;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
-            /* Removed transition: transform, allowing the keyframe animation to control it entirely */
             transform-style: preserve-3d;
         }
 
-        /* --- New Dynamic 3D Tumble Animation --- */
         @keyframes tossCoin {
-            0% { 
-                transform: translate(0, 0) rotateX(0) rotateY(0) rotateZ(0) scale(1); 
-            }
-            50% { 
-                /* Peaks in the air with random translations and high 3D rotation */
-                transform: translate(var(--tx), var(--ty)) rotateX(var(--rx)) rotateY(var(--ry)) rotateZ(var(--rz)) scale(1.1); 
-            }
-            100% { 
-                /* Lands perfectly flat */
-                transform: translate(0, 0) rotateX(0) rotateY(0) rotateZ(0) scale(1); 
-            }
+            0% { transform: translate(0, 0) rotateX(0) rotateY(0) rotateZ(0) scale(1); }
+            50% { transform: translate(var(--tx), var(--ty)) rotateX(var(--rx)) rotateY(var(--ry)) rotateZ(var(--rz)) scale(1.1); }
+            100% { transform: translate(0, 0) rotateX(0) rotateY(0) rotateZ(0) scale(1); }
         }
 
         .symbol-yang {
             width: clamp(16px, 4vw, 22px);
             height: clamp(16px, 4vw, 22px);
-            background-color: var(--vibrant-blue);
+            background: var(--blue-red-split);
             border-radius: 45% 55% 49% 51% / 54% 46% 52% 48%;
         }
 
@@ -246,18 +242,17 @@
             width: clamp(12px, 3.5vw, 16px);
             height: clamp(12px, 3.5vw, 16px);
             border-style: solid;
-            border-color: var(--vibrant-blue);
             border-width: 1.5px 2px 1px 2px;
             border-radius: 4px 12px 5px 10px / 12px 4px 10px 5px; 
-            background-color: transparent;
         }
 
         .btn {
             font-family: 'Caveat', cursive;
-            background-color: transparent;
-            color: var(--vibrant-blue);
+            border-color: transparent;
+            background: linear-gradient(var(--bg-white), var(--bg-white)) padding-box,
+                        var(--blue-red-split) border-box;
+            color: var(--text-black);
             border-style: solid;
-            border-color: var(--vibrant-blue);
             border-width: 1.5px 2px 2.5px 1px;
             border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px; 
             padding: clamp(0.6rem, 2vw, 0.8rem) clamp(1.5rem, 5vw, 2.5rem);
@@ -267,52 +262,66 @@
             text-transform: uppercase;
             cursor: pointer;
             transition: all 0.4s ease;
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
+            margin: 0.5rem;
         }
 
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: var(--vibrant-blue);
-            z-index: -1;
-            transform: scaleY(0);
-            transform-origin: bottom;
-            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
-
-        .btn:hover, .btn:active {
+        .btn:hover, .btn:active { 
+            background: var(--blue-red-split) padding-box,
+                        var(--blue-red-split) border-box;
             color: var(--bg-white);
+            -webkit-text-fill-color: var(--bg-white);
+        }
+        
+        .btn:disabled { opacity: 0.5; pointer-events: none; }
+        
+        .text-btn {
+            font-family: 'Caveat', cursive;
+            border: none;
+            font-size: clamp(1.2rem, 3.5vw, 1.5rem);
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: opacity 0.3s ease;
         }
 
-        .btn:hover::before, .btn:active::before { transform: scaleY(1); }
-        .btn:disabled { opacity: 0.5; pointer-events: none; }
+        .text-btn:hover { opacity: 0.6; -webkit-text-fill-color: var(--text-black); }
 
         .reading-result {
             display: none;
-            margin-top: 2rem;
-            padding-top: 2.5rem;
+            margin-top: 1rem; 
+            padding-top: 2rem;
             border-top: 1px solid rgba(0, 0, 0, 0.05);
             animation: slideUpFade 1s forwards;
+            scroll-margin-top: 140px; /* NEW: Prevents the fixed header from covering the title */
+        }
+
+        /* NEW: Removes the faint line and extra padding from the very first reading */
+        #readings-history .reading-result:first-child {
+            border-top: none;
+            padding-top: 0;
+            margin-top: 0;
         }
 
         .reading-title {
-            color: var(--vibrant-blue);
             font-size: clamp(2rem, 6vw, 2.8rem);
             font-weight: 700;
-            margin-bottom: 1.5rem;
+            margin-bottom: 0.5rem;
             line-height: 1.2;
+        }
+        
+        .reading-question-display {
+            font-size: clamp(1.2rem, 3.5vw, 1.5rem);
+            font-style: italic;
+            margin-bottom: 2rem;
+            color: #666;
         }
 
         .tts-btn {
-            background: transparent;
             border-style: solid;
-            border-color: rgba(0, 68, 214, 0.4);
             border-width: 1.5px 2px 1px 2px;
             border-radius: 48% 52% 55% 45% / 51% 49% 45% 55%;
-            color: var(--vibrant-blue);
             width: 44px;
             height: 44px;
             display: flex;
@@ -323,98 +332,399 @@
             transition: all 0.3s ease;
         }
 
-        .tts-btn:hover {
-            border-color: var(--vibrant-blue);
-            transform: scale(1.05);
-        }
-
-        .tts-icon { width: 22px; height: 22px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
-
-        .tts-word { transition: color 0.15s ease-in-out; }
-        .tts-word.active { color: var(--vibrant-blue); }
+        .tts-btn:hover { transform: scale(1.05); }
+        .tts-icon { width: 22px; height: 22px; stroke-width: 2; }
+        
+        .tts-word { transition: opacity 0.15s ease-in-out; }
 
         .reading-poem {
-            font-size: clamp(1.6rem, 5vw, 2rem);
+            font-size: clamp(1.2rem, 4vw, 2rem); 
             line-height: 1.5;
-            color: var(--text-black);
             margin: 2rem 0;
             text-align: center;
             font-weight: 600;
+            text-wrap: balance;
+            color: var(--text-black); 
         }
 
         .reading-desc {
             font-size: clamp(1.3rem, 4.5vw, 1.6rem);
             line-height: 1.6;
-            color: #444;
             text-align: justify;
+            color: #444;
         }
+        
+        #toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: var(--text-black);
+            color: var(--bg-white);
+            text-align: center;
+            border-radius: 8px;
+            padding: 16px;
+            position: fixed;
+            z-index: 100;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            font-family: 'Caveat', cursive;
+            font-size: 1.5rem;
+            opacity: 0;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        #toast.show { visibility: visible; opacity: 1; }
 
     </style>
 </head>
 <body>
+    
+    <svg width="0" height="0" style="position:absolute;" aria-hidden="true" focusable="false">
+        <defs>
+            <linearGradient id="blueRedSplitGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="50%" stop-color="#0044D6" />
+                <stop offset="50%" stop-color="#D60036" />
+            </linearGradient>
+        </defs>
+    </svg>
 
-    <header>
+    <header onclick="resetOracle()" style="cursor: pointer;">
         <h1>I CHING</h1>
         <div class="subtitle">The Book of Changes</div>
     </header>
-
+    
     <div class="oracle-container">
-        
-        <div class="question-section" id="question-section">
-            <div class="question-label">Hold a question in your mind...</div>
-            <textarea id="user-question" class="question-input" rows="3" placeholder="What guidance do I seek today?"></textarea>
-            <button class="btn" onclick="startReading()">Seek Wisdom</button>
-        </div>
-
-        <div id="toss-section">
-            <div class="hexagram-display" id="hexagram"></div>
-
-            <div class="coins" id="coins-container">
-                <div class="coin"><div class="symbol-blank"></div></div>
-                <div class="coin"><div class="symbol-blank"></div></div>
-                <div class="coin"><div class="symbol-blank"></div></div>
+        <div id="readings-history"></div>
+    
+        <div id="initial-loading" class="ai-loading" style="display:none; text-align:center;">Retrieving scroll<span class="dots"></span></div>
+    
+        <div id="active-area">
+            <div class="question-section" id="question-section">
+                <div class="question-label">Find the question from your heart...</div>
+                <textarea id="user-question" class="question-input" rows="3" placeholder="What guidance do you seek today?"></textarea>
+                <button class="btn" onclick="startReading()">Seek Wisdom</button>
             </div>
-
-            <button class="btn" id="toss-btn" onclick="tossCoins()">Cast the Coins</button>
-            
-            <div id="ai-loading" class="ai-loading">Consulting the oracle<span class="dots"></span></div>
-        </div>
-
-        <div class="reading-result" id="reading-result">
-            <div class="reading-title" id="reading-title">Hexagram Title</div>
-            
-            <button id="tts-btn" class="tts-btn" onclick="toggleTTS()" aria-label="Read Aloud">
-                <svg id="tts-icon-play" class="tts-icon" viewBox="0 0 24 24">
-                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                </svg>
-                <svg id="tts-icon-stop" class="tts-icon" viewBox="0 0 24 24" style="display: none;">
-                    <rect x="6" y="4" width="4" height="16"></rect>
-                    <rect x="14" y="4" width="4" height="16"></rect>
-                </svg>
-            </button>
-
-            <div class="reading-poem" id="reading-poem"></div>
-            <div class="reading-desc" id="reading-desc"></div>
-            <button class="btn" style="margin-top: 3rem;" onclick="resetOracle()">Consult Again</button>
+    
+            <div class="hexagram-display" id="hexagram" style="display:none;"></div>
+    
+            <div id="toss-section" style="display:none;">
+                <div class="coins" id="coins-container">
+                    <div class="coin"><div class="symbol-blank"></div></div>
+                    <div class="coin"><div class="symbol-blank"></div></div>
+                    <div class="coin"><div class="symbol-blank"></div></div>
+                </div>
+                <button class="btn" id="toss-btn" onclick="tossCoins()">Cast the Coins</button>
+                <div id="ai-loading" class="ai-loading">Consulting the oracle<span class="dots"></span></div>
+            </div>
         </div>
     </div>
+    
+    <div id="toast">Link copied to clipboard!</div>
 
     <script>
+        const workerUrl = 'https://iching-oracle-api.tim-and-ranvir.workers.dev'; 
+        
         let currentLine = 1;
         let hexagramBinary = ""; 
         let userQuestionText = "";
-        
         let ttsUtterance = null;
         let ttsWordSpans = [];
         let rawTTSString = "";
+        let currentSessionHistory = [];
+        let currentCast = []; // NEW: Memory array to store the exact coin sums (6, 7, 8, 9)
 
         window.speechSynthesis.getVoices();
 
         const hexagramDatabase = {
             "111111": { id: 1, title: "1. Ch'ien / The Creative" },
             "000000": { id: 2, title: "2. K'un / The Receptive" },
-            "default": { id: "reading", title: "The Mystery of the Changes" }
+            "100010": { id: 3, title: "3. Chun / Difficulty at the Beginning" },
+            "010001": { id: 4, title: "4. Meng / Youthful Folly" },
+            "111010": { id: 5, title: "5. Hsu / Waiting" },
+            "010111": { id: 6, title: "6. Sung / Conflict" },
+            "010000": { id: 7, title: "7. Shih / The Army" },
+            "000010": { id: 8, title: "8. Pi / Holding Together" },
+            "111011": { id: 9, title: "9. Hsiao Ch'u / The Taming Power of the Small" },
+            "110111": { id: 10, title: "10. Lu / Treading" },
+            "111000": { id: 11, title: "11. T'ai / Peace" },
+            "000111": { id: 12, title: "12. P'i / Standstill" },
+            "101111": { id: 13, title: "13. T'ung Jen / Fellowship with Men" },
+            "111101": { id: 14, title: "14. Ta Yu / Possession in Great Measure" },
+            "001000": { id: 15, title: "15. Ch'ien / Modesty" },
+            "000100": { id: 16, title: "16. Yu / Enthusiasm" },
+            "100110": { id: 17, title: "17. Sui / Following" },
+            "011001": { id: 18, title: "18. Ku / Work on what has been spoiled" },
+            "110000": { id: 19, title: "19. Lin / Approach" },
+            "000011": { id: 20, title: "20. Kuan / Contemplation" },
+            "100101": { id: 21, title: "21. Shih Ho / Biting Through" },
+            "101001": { id: 22, title: "22. Pi / Grace" },
+            "000001": { id: 23, title: "23. Po / Splitting Apart" },
+            "100000": { id: 24, title: "24. Fu / Return" },
+            "100111": { id: 25, title: "25. Wu Wang / Innocence" },
+            "111001": { id: 26, title: "26. Ta Ch'u / The Taming Power of the Great" },
+            "100001": { id: 27, title: "27. I / Corners of the Mouth" },
+            "011110": { id: 28, title: "28. Ta Kuo / Preponderance of the Great" },
+            "010010": { id: 29, title: "29. K'an / The Abysmal (Water)" },
+            "101101": { id: 30, title: "30. Li / The Clinging (Fire)" },
+            "001110": { id: 31, title: "31. Hsien / Influence (Wooing)" },
+            "011100": { id: 32, title: "32. Heng / Duration" },
+            "001111": { id: 33, title: "33. Tun / Retreat" },
+            "111100": { id: 34, title: "34. Ta Chuang / The Power of the Great" },
+            "000101": { id: 35, title: "35. Chin / Progress" },
+            "101000": { id: 36, title: "36. Ming I / Darkening of the Light" },
+            "101011": { id: 37, title: "37. Chia Jen / The Family" },
+            "110101": { id: 38, title: "38. K'uei / Opposition" },
+            "001010": { id: 39, title: "39. Chien / Obstruction" },
+            "010100": { id: 40, title: "40. Hsieh / Deliverance" },
+            "110001": { id: 41, title: "41. Sun / Decrease" },
+            "100011": { id: 42, title: "42. I / Increase" },
+            "111110": { id: 43, title: "43. Kuai / Break-through" },
+            "011111": { id: 44, title: "44. Kou / Coming to Meet" },
+            "000110": { id: 45, title: "45. Ts'ui / Gathering Together" },
+            "011000": { id: 46, title: "46. Sheng / Pushing Upward" },
+            "010110": { id: 47, title: "47. K'un / Oppression (Exhaustion)" },
+            "011010": { id: 48, title: "48. Ching / The Well" },
+            "101110": { id: 49, title: "49. Ko / Revolution (Molting)" },
+            "011101": { id: 50, title: "50. Ting / The Caldron" },
+            "100100": { id: 51, title: "51. Chen / The Arousing (Shock)" },
+            "001001": { id: 52, title: "52. Ken / Keeping Still (Mountain)" },
+            "001011": { id: 53, title: "53. Chien / Development (Gradual Progress)" },
+            "110100": { id: 54, title: "54. Kuei Mei / The Marrying Maiden" },
+            "101100": { id: 55, title: "55. Feng / Abundance" },
+            "001101": { id: 56, title: "56. Lu / The Wanderer" },
+            "011011": { id: 57, title: "57. Sun / The Gentle (Wind)" },
+            "110110": { id: 58, title: "58. Tui / The Joyous (Lake)" },
+            "010011": { id: 59, title: "59. Huan / Dispersion" },
+            "110010": { id: 60, title: "60. Chieh / Limitation" },
+            "110011": { id: 61, title: "61. Chung Fu / Inner Truth" },
+            "001100": { id: 62, title: "62. Hsiao Kuo / Preponderance of the Small" },
+            "101010": { id: 63, title: "63. Chi Chi / After Completion" },
+            "010101": { id: 64, title: "64. Wei Chi / Before Completion" },
+            "default": { id: "reading", title: "A Message from the Oracle" }
         };
+
+        window.onload = () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const savedId = urlParams.get('id');
+            
+            if (savedId) {
+                document.getElementById('question-section').style.display = 'none';
+                document.getElementById('initial-loading').style.display = 'block';
+                loadSavedReading(savedId);
+            }
+        };
+
+        function resetOracle() {
+            window.location.href = window.location.origin + window.location.pathname;
+        }
+
+        function consultAgain() {
+            window.speechSynthesis.cancel();
+            
+            const oldControls = document.querySelectorAll('.session-controls, .active-tts-btn');
+            oldControls.forEach(b => b.style.display = 'none');
+
+            document.getElementById('hexagram').innerHTML = "";
+            document.getElementById('hexagram').style.display = 'none';
+            document.getElementById('toss-section').style.display = 'none';
+            document.getElementById('toss-btn').style.display = "inline-block";
+            document.getElementById('toss-btn').disabled = false;
+            document.getElementById('coins-container').style.display = "flex";
+            document.querySelectorAll('.coin').forEach(c => c.innerHTML = '<div class="symbol-blank"></div>');
+            
+            const qLabel = document.querySelector('.question-label');
+            const qInput = document.getElementById('user-question');
+            
+            if (currentSessionHistory.length > 0) {
+                document.getElementById('active-area').classList.add('has-history');
+                qLabel.innerText = "Delve deeper into the changes...";
+                qInput.placeholder = "What further guidance do you seek?";
+            } else {
+                document.getElementById('active-area').classList.remove('has-history');
+                qLabel.innerText = "Hold a question in your mind...";
+                qInput.placeholder = "What guidance do I seek today?";
+            }
+
+            document.getElementById('question-section').style.display = 'flex';
+            qInput.value = "";
+            
+            currentLine = 1;
+            hexagramBinary = "";
+            currentCast = []; // Clear the memory for the new cast
+
+            setTimeout(() => {
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            }, 100);
+        }
+
+        async function fetchAIReading(hexagramString, userQuestion) {
+            const baseHexagram = hexagramDatabase[hexagramString] || hexagramDatabase["default"];
+            
+            // NEW: We hijack the ID field to attach the exact coin tosses (e.g. "45|888976") 
+            // so the worker saves it without needing a backend database update!
+            const exactCastId = baseHexagram.id + "|" + currentCast.join(""); 
+            
+            try {
+                const response = await fetch(workerUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        hexagramId: exactCastId, 
+                        hexagramTitle: baseHexagram.title,
+                        question: userQuestion,
+                        history: currentSessionHistory 
+                    })
+                });
+
+                const aiData = await response.json();
+                
+                if (!response.ok || aiData.error) {
+                    throw new Error("The oracle's connection was disrupted.");
+                }
+
+                currentSessionHistory = aiData.sessionHistory; 
+                displayResult(aiData);
+                
+            } catch (error) {
+                console.error("Reading failed:", error);
+                
+                const randomId = Math.random().toString(36).substring(2, 10);
+                const fallbackReading = {
+                    id: randomId,
+                    hexagramId: exactCastId, // Ensure fallback also gets the correct visual lines
+                    title: baseHexagram.title,
+                    question: userQuestion,
+                    poem: "The winds of heaven are silent today,\nThe waters are still, the clouds are gray.",
+                    desc: "The oracle could not be reached at this moment. The energies are clouded. Please take a breath and consult again in a few moments."
+                };
+                
+                currentSessionHistory.push(fallbackReading);
+                displayResult(fallbackReading);
+            }
+        }
+
+        // NEW: Advanced reconstructor that reads the hijacked ID string to draw changing lines
+        function generateExactLines(hexagramId, title) {
+            let castArray = [];
+            
+            const idString = String(hexagramId);
+            if (idString.includes('|')) {
+                // If it's a new reading with our special ID ("45|888976"), extract the exact tosses
+                const parts = idString.split('|');
+                castArray = parts[1].split('').map(Number); 
+            } else {
+                // FALLBACK: If opening an old reading, default to plain black lines
+                let binStr = "";
+                for (const [key, val] of Object.entries(hexagramDatabase)) {
+                    if (val.title === title) {
+                        binStr = key;
+                        break;
+                    }
+                }
+                if (!binStr || binStr === "default") return "";
+                castArray = binStr.split('').map(bit => bit === "1" ? 7 : 8);
+            }
+
+            let html = "";
+            for (let i = 0; i < castArray.length; i++) {
+                const sum = castArray[i];
+                const isYin = (sum === 6 || sum === 8);
+                const isChanging = (sum === 6 || sum === 9);
+                
+                const duration = (10.0 + Math.random() * 6.0).toFixed(2);
+                const delay = (Math.random() * -4).toFixed(2);
+                const changingClass = isChanging ? " changing" : "";
+                
+                let paths = "";
+                if (isYin) {
+                    paths = `<path class="pen-path" d="${generateHandDrawnPath(0, 85, 2.5)}" stroke-width="4.5"></path>
+                             <path class="pen-path" d="${generateHandDrawnPath(115, 200, 2.5)}" stroke-width="4.5"></path>`;
+                } else {
+                    paths = `<path class="pen-path" d="${generateHandDrawnPath(0, 200, 2.5)}" stroke-width="4.5"></path>`;
+                }
+
+                html += `<div class="yao-line${changingClass}"><svg class="wavy-line-svg" viewBox="0 0 200 20" preserveAspectRatio="none" style="animation: subtleWave ${duration}s ease-in-out ${delay}s infinite;">${paths}</svg></div>`;
+            }
+            return html;
+        }
+
+        function displayResult(data) {
+            document.getElementById('ai-loading').style.display = "none";
+            document.getElementById('question-section').style.display = 'none';
+
+            const resultBlock = document.createElement('div');
+            resultBlock.className = 'reading-result';
+            resultBlock.style.display = 'block';
+            
+            const shareId = data.id;
+            window.history.pushState({}, '', `?id=${shareId}`);
+
+            rawTTSString = `${data.title}. ${data.poem}. ${data.desc}`;
+            ttsWordSpans = []; 
+
+            const hexArea = document.getElementById('hexagram');
+            let currentHexagramHtml = hexArea.innerHTML;
+            hexArea.innerHTML = ""; 
+
+            // FIX: Uses the exact memory to perfectly reconstruct the changing lines!
+            if (!currentHexagramHtml.trim()) {
+                currentHexagramHtml = generateExactLines(data.hexagramId, data.title);
+            }
+
+            resultBlock.innerHTML = `
+                <div class="hexagram-display" style="display: flex; flex-direction: column-reverse; align-items: center; gap: 10px; margin-bottom: 4rem;">
+                    ${currentHexagramHtml}
+                </div>
+                <div class="reading-title">${data.title}</div>
+                <div class="reading-question-display">"${data.question}"</div>
+                
+                <button class="tts-btn active-tts-btn" onclick="toggleTTS(this)" aria-label="Read Aloud">
+                    <svg class="tts-icon-play tts-icon" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                    <svg class="tts-icon-stop tts-icon" viewBox="0 0 24 24" style="display: none;"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+                </button>
+
+                <div class="reading-poem"></div>
+                <div class="reading-desc"></div>
+                
+                <div class="session-controls" style="margin-top: 3rem; display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+                    <button class="text-btn" onclick="shareReading()">Share</button>
+                    <button class="btn" onclick="consultAgain()">Continue Your Questioning</button>
+                </div>
+            `;
+
+            let poemContainer = resultBlock.querySelector('.reading-poem');
+            let descContainer = resultBlock.querySelector('.reading-desc');
+            let currentOffset = data.title.length + 2; 
+            
+            currentOffset = formatTextForTTS(data.poem, poemContainer, true, currentOffset);
+            currentOffset += 2; 
+            formatTextForTTS(data.desc, descContainer, false, currentOffset);
+
+            document.getElementById('readings-history').appendChild(resultBlock);
+            
+            setTimeout(() => {
+                resultBlock.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        }
+
+        async function loadSavedReading(id) {
+            try {
+                const response = await fetch(`${workerUrl}?id=${id}`);
+                const historyData = await response.json();
+                
+                document.getElementById('initial-loading').style.display = 'none';
+                document.getElementById('question-section').style.display = 'none';
+
+                historyData.forEach((reading, index) => {
+                    currentSessionHistory.push(reading);
+                    displayResult(reading);
+                    
+                    if (index < historyData.length - 1) {
+                        const ctrls = document.querySelectorAll('.session-controls, .active-tts-btn');
+                        ctrls[ctrls.length-1].style.display = 'none';
+                    }
+                });
+            } catch (e) { resetOracle(); }
+        }
 
         function startReading() {
             const input = document.getElementById('user-question').value.trim();
@@ -422,41 +732,37 @@
             
             document.getElementById('question-section').style.display = 'none';
             document.getElementById('toss-section').style.display = 'flex';
+            document.getElementById('hexagram').style.display = 'flex'; 
+
+            // NEW: Smoothly scroll the coin tossing section perfectly into the center of the screen
+            setTimeout(() => {
+                document.getElementById('toss-section').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
         }
 
         function tossCoins() {
             if (currentLine > 6) return;
-
             const coins = document.querySelectorAll('.coin');
             const btn = document.getElementById('toss-btn');
             btn.disabled = true;
 
-            // Generate completely random 3D paths and rotations for each coin
             coins.forEach(coin => {
-                // Clear symbols
                 coin.innerHTML = ''; 
-                
-                // Force a reflow to reset the animation so it plays every single click
                 coin.style.animation = 'none';
                 void coin.offsetWidth; 
                 
-                // Random multi-directional rotation (720deg to 1080deg)
                 const rx = (Math.random() * 720 + 720) * (Math.random() > 0.5 ? 1 : -1);
                 const ry = (Math.random() * 720 + 720) * (Math.random() > 0.5 ? 1 : -1);
                 const rz = (Math.random() * 360) * (Math.random() > 0.5 ? 1 : -1);
+                const tx = (Math.random() * 60 - 30); 
+                const ty = -(Math.random() * 40 + 40); 
                 
-                // Random scatter translation (jump up, and scatter slightly left/right)
-                const tx = (Math.random() * 60 - 30); // -30px to 30px lateral
-                const ty = -(Math.random() * 40 + 40); // -40px to -80px vertical
-                
-                // Set the CSS variables for the keyframe to read
                 coin.style.setProperty('--rx', `${rx}deg`);
                 coin.style.setProperty('--ry', `${ry}deg`);
                 coin.style.setProperty('--rz', `${rz}deg`);
                 coin.style.setProperty('--tx', `${tx}px`);
                 coin.style.setProperty('--ty', `${ty}px`);
                 
-                // Apply the toss animation (duration 0.6s)
                 coin.style.animation = 'tossCoin 0.6s cubic-bezier(0.3, 0.1, 0.3, 1) forwards';
             });
 
@@ -468,15 +774,14 @@
                     sum += val;
                     coinResults.push(val);
                 }
+                
+                // NEW: Push the exact sum into the memory array!
+                currentCast.push(sum);
 
                 coins.forEach((coin, index) => {
                     coin.innerHTML = ''; 
                     const symbol = document.createElement('div');
-                    if (coinResults[index] === 3) {
-                        symbol.className = 'symbol-yang';
-                    } else {
-                        symbol.className = 'symbol-yin';
-                    }
+                    symbol.className = coinResults[index] === 3 ? 'symbol-yang' : 'symbol-yin';
                     coin.appendChild(symbol);
                 });
 
@@ -488,11 +793,10 @@
                 } else {
                     btn.style.display = "none";
                     document.getElementById('coins-container').style.display = "none";
-                    
                     document.getElementById('ai-loading').style.display = "block";
                     fetchAIReading(hexagramBinary, userQuestionText);
                 }
-            }, 600); // Wait for the 0.6s toss animation to complete
+            }, 600); 
         }
 
         function generateHandDrawnPath(startX, endX, woggleHeight) {
@@ -500,24 +804,18 @@
             const yMid = 10; 
             const segments = Math.max(1, Math.floor(width / 30)); 
             const segmentWidth = width / segments;
-            
             let path = `M ${startX} ${(yMid + (Math.random() - 0.5) * woggleHeight).toFixed(2)}`;
-            
             let currentX = startX;
             for (let i = 0; i < segments; i++) {
                 const nextX = currentX + segmentWidth;
-                
                 const c1x = currentX + segmentWidth / 3;
                 const c2x = currentX + 2 * segmentWidth / 3;
-                
                 const c1y = yMid + (Math.random() - 0.5) * (woggleHeight * 2);
                 const c2y = yMid + (Math.random() - 0.5) * (woggleHeight * 2);
                 const endY = yMid + (Math.random() - 0.5) * woggleHeight;
-                
                 path += ` C ${c1x.toFixed(2)} ${c1y.toFixed(2)}, ${c2x.toFixed(2)} ${c2y.toFixed(2)}, ${nextX.toFixed(2)} ${endY.toFixed(2)}`;
                 currentX = nextX;
             }
-            
             return path;
         }
 
@@ -526,9 +824,7 @@
             const lineDiv = document.createElement('div');
             lineDiv.classList.add('yao-line'); 
 
-            if (sum === 6 || sum === 9) {
-                lineDiv.classList.add('changing');
-            }
+            if (sum === 6 || sum === 9) lineDiv.classList.add('changing');
 
             const svgNS = "http://www.w3.org/2000/svg";
             const svg = document.createElementNS(svgNS, "svg");
@@ -543,77 +839,29 @@
             const naturalWobble = 2.5; 
 
             if (sum === 6 || sum === 8) {
-                const path1Data = generateHandDrawnPath(0, 85, naturalWobble);
                 const path1 = document.createElementNS(svgNS, "path");
                 path1.setAttribute("class", "pen-path");
-                path1.setAttribute("d", path1Data);
+                path1.setAttribute("d", generateHandDrawnPath(0, 85, naturalWobble));
                 path1.setAttribute("stroke-width", "4.5"); 
                 svg.appendChild(path1);
 
-                const path2Data = generateHandDrawnPath(115, 200, naturalWobble);
                 const path2 = document.createElementNS(svgNS, "path");
                 path2.setAttribute("class", "pen-path");
-                path2.setAttribute("d", path2Data);
+                path2.setAttribute("d", generateHandDrawnPath(115, 200, naturalWobble));
                 path2.setAttribute("stroke-width", "4.5");
                 svg.appendChild(path2);
-                
                 hexagramBinary += "0"; 
             } else {
-                const pathData = generateHandDrawnPath(0, 200, naturalWobble);
                 const path = document.createElementNS(svgNS, "path");
                 path.setAttribute("class", "pen-path");
-                path.setAttribute("d", pathData);
+                path.setAttribute("d", generateHandDrawnPath(0, 200, naturalWobble));
                 path.setAttribute("stroke-width", "4.5");
                 svg.appendChild(path);
-                
                 hexagramBinary += "1";
             }
 
             lineDiv.appendChild(svg);
             hexArea.appendChild(lineDiv);
-        }
-
-        async function fetchAIReading(hexagramString, userQuestion) {
-            const baseHexagram = hexagramDatabase[hexagramString] || hexagramDatabase["default"];
-            
-            try {
-                // IMPORTANT: Replace this URL with your actual Cloudflare Worker URL
-                const workerUrl = 'https://iching-oracle.YOUR-USERNAME.workers.dev';
-                
-                /* // UNCOMMENT THIS TO CONNECT TO CLOUDFLARE
-                const response = await fetch(workerUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        hexagramTitle: baseHexagram.title,
-                        question: userQuestion 
-                    })
-                });
-
-                if (!response.ok) throw new Error("Network response was not ok");
-                const aiData = await response.json();
-                */
-
-                // Simulated API delay for demonstration
-                await new Promise(resolve => setTimeout(resolve, 2500));
-                
-                // Simulated AI Response
-                const aiData = {
-                    poem: "The river curves around the unyielding stone,\nReflecting heavens where the questions are thrown.\nYour query echoes in the quiet wood,\nWhere time unfolds exactly as it should.",
-                    desc: `In regard to your question: "${userQuestion}", the oracle indicates a time of deep observation rather than forceful action. Just as water naturally finds its way around obstacles, your path forward requires flexibility and patience. Trust that the answers are already forming beneath the surface of your current circumstances.`
-                };
-
-                displayResult(baseHexagram.title, aiData.poem, aiData.desc, baseHexagram.id);
-                
-            } catch (error) {
-                console.error("Error fetching AI reading:", error);
-                displayResult(
-                    baseHexagram.title, 
-                    "The winds of heaven are silent today,\nThe waters are still, the clouds are gray.", 
-                    "The oracle could not be reached at this moment. Please check your connection and consult again.",
-                    baseHexagram.id
-                );
-            }
         }
 
         function formatTextForTTS(text, containerElement, isPoem, currentOffset) {
@@ -626,11 +874,7 @@
                     span.className = 'tts-word';
                     span.innerText = token;
                     containerElement.appendChild(span);
-                    ttsWordSpans.push({
-                        element: span,
-                        start: currentOffset,
-                        end: currentOffset + token.length
-                    });
+                    ttsWordSpans.push({ element: span, start: currentOffset, end: currentOffset + token.length });
                 } else { 
                     if (isPoem && token.includes('\n')) {
                         const newlines = (token.match(/\n/g) || []).length;
@@ -646,29 +890,30 @@
             return currentOffset;
         }
 
-        function displayResult(title, poem, desc, id) {
-            document.getElementById('ai-loading').style.display = "none";
-            document.getElementById('reading-title').innerText = title;
-            
-            ttsWordSpans = [];
-            let offset = 0;
-            
-            const poemText = poem + "\n\n";
-            const descText = desc;
-            rawTTSString = poemText + descText;
-
-            offset = formatTextForTTS(poemText, document.getElementById('reading-poem'), true, offset);
-            formatTextForTTS(descText, document.getElementById('reading-desc'), false, offset);
-            
-            document.getElementById('reading-result').style.display = 'block';
-
-            const newUrl = `${window.location.pathname}?reading=${id}`;
-            window.history.pushState({ path: newUrl }, '', newUrl);
+        function shareReading() {
+            const url = window.location.href;
+            if (navigator.share) {
+                navigator.share({
+                    title: 'The I Ching Oracle',
+                    text: 'Read my I Ching oracle reading:',
+                    url: url
+                }).catch(err => { fallbackCopy(url); });
+            } else { fallbackCopy(url); }
         }
 
-        function toggleTTS() {
+        function fallbackCopy(url) {
+            navigator.clipboard.writeText(url).then(() => {
+                const toast = document.getElementById("toast");
+                toast.className = "show";
+                setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 3000);
+            }).catch(err => { alert("Please manually copy the URL to share."); });
+        }
+
+        function toggleTTS(btnElement) {
             const synth = window.speechSynthesis;
-            
+            const playIcon = btnElement.querySelector('.tts-icon-play');
+            const stopIcon = btnElement.querySelector('.tts-icon-stop');
+
             if (synth.speaking) {
                 synth.cancel();
                 resetTTSUI();
@@ -679,21 +924,12 @@
             ttsUtterance.rate = 0.75; 
             
             const voices = synth.getVoices();
-            const britishMaleVoice = voices.find(v => 
-                (v.lang.includes('en-GB') || v.lang.includes('en_GB')) && 
-                (v.name.toLowerCase().includes('male') || v.name.toLowerCase().includes('daniel') || v.name.toLowerCase().includes('ryan') || v.name.toLowerCase().includes('arthur'))
-            ) || voices.find(v => 
-                (v.lang.includes('en-GB') || v.lang.includes('en_GB')) && 
-                !v.name.toLowerCase().includes('female') && 
-                !v.name.toLowerCase().includes('serena') &&
-                !v.name.toLowerCase().includes('stephanie')
-            ) || voices.find(v => 
-                v.lang.startsWith('en') && v.name.toLowerCase().includes('male')
-            ) || voices[0];
+            const britishMaleVoice = voices.find(v => (v.lang.includes('en-GB') || v.lang.includes('en_GB')) && (v.name.toLowerCase().includes('male') || v.name.toLowerCase().includes('daniel') || v.name.toLowerCase().includes('ryan') || v.name.toLowerCase().includes('arthur'))) 
+            || voices.find(v => (v.lang.includes('en-GB') || v.lang.includes('en_GB')) && !v.name.toLowerCase().includes('female') && !v.name.toLowerCase().includes('serena')) 
+            || voices.find(v => v.lang.startsWith('en') && v.name.toLowerCase().includes('male')) 
+            || voices[0];
             
-            if (britishMaleVoice) {
-                ttsUtterance.voice = britishMaleVoice;
-            }
+            if (britishMaleVoice) ttsUtterance.voice = britishMaleVoice;
 
             ttsUtterance.onboundary = (event) => {
                 if (event.name === 'word') {
@@ -710,46 +946,18 @@
             ttsUtterance.onend = () => { resetTTSUI(); };
             ttsUtterance.onerror = () => { resetTTSUI(); };
 
-            document.getElementById('tts-icon-play').style.display = 'none';
-            document.getElementById('tts-icon-stop').style.display = 'block';
+            playIcon.style.display = 'none';
+            stopIcon.style.display = 'block';
 
             synth.speak(ttsUtterance);
         }
 
         function resetTTSUI() {
-            document.getElementById('tts-icon-play').style.display = 'block';
-            document.getElementById('tts-icon-stop').style.display = 'none';
-            ttsWordSpans.forEach(item => item.element.classList.remove('active'));
+            document.querySelectorAll('.tts-icon-play').forEach(i => i.style.display = 'block');
+            document.querySelectorAll('.tts-icon-stop').forEach(i => i.style.display = 'none');
+            document.querySelectorAll('.tts-word').forEach(w => w.classList.remove('active'));
         }
 
-        function resetOracle() {
-            window.speechSynthesis.cancel();
-            resetTTSUI();
-
-            currentLine = 1;
-            hexagramBinary = "";
-            userQuestionText = "";
-            document.getElementById('user-question').value = "";
-            
-            document.getElementById('hexagram').innerHTML = "";
-            document.getElementById('reading-result').style.display = "none";
-            
-            document.getElementById('toss-btn').style.display = "inline-block";
-            document.getElementById('toss-btn').disabled = false;
-            
-            document.getElementById('coins-container').style.display = "flex";
-            document.querySelectorAll('.coin').forEach(coin => {
-                coin.innerHTML = '<div class="symbol-blank"></div>';
-                coin.style.animation = 'none'; // Clear the animation state for the next reading
-                coin.classList.remove('flip');
-            });
-            
-            document.getElementById('toss-section').style.display = 'none';
-            document.getElementById('question-section').style.display = 'flex';
-            
-            window.history.pushState({ path: window.location.pathname }, '', window.location.pathname);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
     </script>
 </body>
 </html>
