@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>The I Ching | Oracle</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-white: #FFFFFF;
+            --text-black: #1A1A1A;
+            --vibrant-blue: #0044D6; 
+            --subtle-shadow: 0 -4px 30px rgba(0, 0, 0, 0.06);
+            
+            --pen-stroke-black: rgba(26, 26, 26, 0.95); 
+            --pen-stroke-blue: rgba(0, 68, 214, 0.95);
+        }
+
+        body {
+            font-family: 'Caveat', cursive;
+            background-color: #FAFAFA;
+            color: var(--text-black);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        header {
+            position: fixed;
+            top: clamp(1.5rem, 4vw, 3rem);
+            left: 0;
+            width: 100%;
+            text-align: center;
+            padding: 0 1rem;
+            z-index: 1; 
+        }
+
+        h1 {
+            color: var(--vibrant-blue);
+            font-size: clamp(3rem, 8vw, 4.5rem);
+            letter-spacing: 0.05em;
+            margin-bottom: -0.5rem; 
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: clamp(1.4rem, 4vw, 1.8rem);
+            font-weight: 500;
+            letter-spacing: 0.05em;
+        }
+
+        .oracle-container {
+            position: relative;
+            z-index: 10; 
+            background-color: var(--bg-white);
+            max-width: 650px;
+            width: 92%;
+            margin: clamp(10rem, 25vw, 14rem) auto 4rem auto; 
+            padding: clamp(2.5rem, 6vw, 4rem) clamp(1.5rem, 5vw, 2.5rem);
+            border-radius: 15px 225px 12px 255px / 255px 12px 225px 15px;
+            box-shadow: var(--subtle-shadow);
+            text-align: center;
+        }
+
+        /* --- Question Input Area --- */
+        .question-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 2rem;
+            animation: slideUpFade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        .question-label {
+            font-size: clamp(1.8rem, 5vw, 2.2rem);
+            color: var(--text-black);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .question-input {
+            width: 100%;
+            font-family: 'Caveat', cursive;
+            font-size: clamp(1.4rem, 4vw, 1.8rem);
+            color: var(--vibrant-blue);
+            background-color: transparent;
+            padding: 1rem 1.5rem;
+            margin-bottom: 2rem;
+            resize: none;
+            outline: none;
+            border-style: solid;
+            border-color: rgba(0, 68, 214, 0.3);
+            border-width: 1.5px 2px 2.5px 1px;
+            border-radius: 15px 225px 15px 255px / 255px 15px 225px 15px;
+            transition: border-color 0.3s ease;
+        }
+
+        .question-input:focus {
+            border-color: var(--vibrant-blue);
+        }
+
+        .question-input::placeholder {
+            color: rgba(0, 68, 214, 0.3);
+        }
+
+        #toss-section {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            animation: slideUpFade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        .ai-loading {
+            display: none;
+            color: var(--vibrant-blue);
+            font-size: 1.8rem;
+            margin: 2rem 0;
+            font-weight: 600;
+        }
+        
+        .dots::after {
+            content: '';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+        
+        @keyframes dots {
+            0%, 20% { content: ''; }
+            40% { content: '.'; }
+            60% { content: '..'; }
+            80%, 100% { content: '...'; }
+        }
+
+        .hexagram-display {
+            display: flex;
+            flex-direction: column-reverse;
+            align-items: center;
+            gap: clamp(10px, 3vw, 14px);
+            margin: 0 auto 3.5rem auto;
+            min-height: 140px;
+            width: 100%;
+        }
+
+        .yao-line {
+            width: 100%;
+            max-width: 180px; 
+            height: clamp(12px, 3vw, 18px);
+            opacity: 0;
+            transform: translateY(10px);
+            animation: slideUpFade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .wavy-line-svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible; 
+        }
+
+        .pen-path {
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            fill: none;
+            stroke: var(--pen-stroke-black);
+            transition: stroke 0.4s ease;
+        }
+
+        .yao-line.changing .pen-path {
+            stroke: var(--pen-stroke-blue);
+        }
+
+        @keyframes slideUpFade {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes subtleWave {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+
+        .coins {
+            display: flex;
+            justify-content: center;
+            gap: clamp(1.2rem, 5vw, 2.5rem);
+            margin-bottom: 3.5rem;
+            min-height: 70px;
+            /* Added perspective to make the 3D tumble look deep and realistic */
+            perspective: 800px;
+        }
+
+        .coin {
+            width: clamp(50px, 15vw, 64px);
+            height: clamp(50px, 15vw, 64px);
+            border-style: solid;
+            border-color: var(--vibrant-blue);
+            border-width: 2px 1.5px 2.5px 1.5px; 
+            border-radius: 47% 53% 51% 49% / 52% 48% 53% 47%;
+            background: var(--bg-white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+            /* Removed transition: transform, allowing the keyframe animation to control it entirely */
+            transform-style: preserve-3d;
+        }
+
+        /* --- New Dynamic 3D Tumble Animation --- */
+        @keyframes tossCoin {
+            0% { 
+                transform: translate(0, 0) rotateX(0) rotateY(0) rotateZ(0) scale(1); 
+            }
+            50% { 
+                /* Peaks in the air with random translations and high 3D rotation */
+                transform: translate(var(--tx), var(--ty)) rotateX(var(--rx)) rotateY(var(--ry)) rotateZ(var(--rz)) scale(1.1); 
+            }
+            100% { 
+                /* Lands perfectly flat */
+                transform: translate(0, 0) rotateX(0) rotateY(0) rotateZ(0) scale(1); 
+            }
+        }
+
+        .symbol-yang {
+            width: clamp(16px, 4vw, 22px);
+            height: clamp(16px, 4vw, 22px);
+            background-color: var(--vibrant-blue);
+            border-radius: 45% 55% 49% 51% / 54% 46% 52% 48%;
+        }
+
+        .symbol-yin, .symbol-blank {
+            width: clamp(12px, 3.5vw, 16px);
+            height: clamp(12px, 3.5vw, 16px);
+            border-style: solid;
+            border-color: var(--vibrant-blue);
+            border-width: 1.5px 2px 1px 2px;
+            border-radius: 4px 12px 5px 10px / 12px 4px 10px 5px; 
+            background-color: transparent;
+        }
+
+        .btn {
+            font-family: 'Caveat', cursive;
+            background-color: transparent;
+            color: var(--vibrant-blue);
+            border-style: solid;
+            border-color: var(--vibrant-blue);
+            border-width: 1.5px 2px 2.5px 1px;
+            border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px; 
+            padding: clamp(0.6rem, 2vw, 0.8rem) clamp(1.5rem, 5vw, 2.5rem);
+            font-size: clamp(1.4rem, 4vw, 1.8rem);
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: var(--vibrant-blue);
+            z-index: -1;
+            transform: scaleY(0);
+            transform-origin: bottom;
+            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .btn:hover, .btn:active {
+            color: var(--bg-white);
+        }
+
+        .btn:hover::before, .btn:active::before { transform: scaleY(1); }
+        .btn:disabled { opacity: 0.5; pointer-events: none; }
+
+        .reading-result {
+            display: none;
+            margin-top: 2rem;
+            padding-top: 2.5rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            animation: slideUpFade 1s forwards;
+        }
+
+        .reading-title {
+            color: var(--vibrant-blue);
+            font-size: clamp(2rem, 6vw, 2.8rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .tts-btn {
+            background: transparent;
+            border-style: solid;
+            border-color: rgba(0, 68, 214, 0.4);
+            border-width: 1.5px 2px 1px 2px;
+            border-radius: 48% 52% 55% 45% / 51% 49% 45% 55%;
+            color: var(--vibrant-blue);
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin: 0 auto 1.5rem auto;
+            transition: all 0.3s ease;
+        }
+
+        .tts-btn:hover {
+            border-color: var(--vibrant-blue);
+            transform: scale(1.05);
+        }
+
+        .tts-icon { width: 22px; height: 22px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+
+        .tts-word { transition: color 0.15s ease-in-out; }
+        .tts-word.active { color: var(--vibrant-blue); }
+
+        .reading-poem {
+            font-size: clamp(1.6rem, 5vw, 2rem);
+            line-height: 1.5;
+            color: var(--text-black);
+            margin: 2rem 0;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .reading-desc {
+            font-size: clamp(1.3rem, 4.5vw, 1.6rem);
+            line-height: 1.6;
+            color: #444;
+            text-align: justify;
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>I CHING</h1>
+        <div class="subtitle">The Book of Changes</div>
+    </header>
+
+    <div class="oracle-container">
+        
+        <div class="question-section" id="question-section">
+            <div class="question-label">Hold a question in your mind...</div>
+            <textarea id="user-question" class="question-input" rows="3" placeholder="What guidance do I seek today?"></textarea>
+            <button class="btn" onclick="startReading()">Seek Wisdom</button>
+        </div>
+
+        <div id="toss-section">
+            <div class="hexagram-display" id="hexagram"></div>
+
+            <div class="coins" id="coins-container">
+                <div class="coin"><div class="symbol-blank"></div></div>
+                <div class="coin"><div class="symbol-blank"></div></div>
+                <div class="coin"><div class="symbol-blank"></div></div>
+            </div>
+
+            <button class="btn" id="toss-btn" onclick="tossCoins()">Cast the Coins</button>
+            
+            <div id="ai-loading" class="ai-loading">Consulting the oracle<span class="dots"></span></div>
+        </div>
+
+        <div class="reading-result" id="reading-result">
+            <div class="reading-title" id="reading-title">Hexagram Title</div>
+            
+            <button id="tts-btn" class="tts-btn" onclick="toggleTTS()" aria-label="Read Aloud">
+                <svg id="tts-icon-play" class="tts-icon" viewBox="0 0 24 24">
+                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+                <svg id="tts-icon-stop" class="tts-icon" viewBox="0 0 24 24" style="display: none;">
+                    <rect x="6" y="4" width="4" height="16"></rect>
+                    <rect x="14" y="4" width="4" height="16"></rect>
+                </svg>
+            </button>
+
+            <div class="reading-poem" id="reading-poem"></div>
+            <div class="reading-desc" id="reading-desc"></div>
+            <button class="btn" style="margin-top: 3rem;" onclick="resetOracle()">Consult Again</button>
+        </div>
+    </div>
+
+    <script>
+        let currentLine = 1;
+        let hexagramBinary = ""; 
+        let userQuestionText = "";
+        
+        let ttsUtterance = null;
+        let ttsWordSpans = [];
+        let rawTTSString = "";
+
+        window.speechSynthesis.getVoices();
+
+        const hexagramDatabase = {
+            "111111": { id: 1, title: "1. Ch'ien / The Creative" },
+            "000000": { id: 2, title: "2. K'un / The Receptive" },
+            "default": { id: "reading", title: "The Mystery of the Changes" }
+        };
+
+        function startReading() {
+            const input = document.getElementById('user-question').value.trim();
+            userQuestionText = input || "Provide a general reading.";
+            
+            document.getElementById('question-section').style.display = 'none';
+            document.getElementById('toss-section').style.display = 'flex';
+        }
+
+        function tossCoins() {
+            if (currentLine > 6) return;
+
+            const coins = document.querySelectorAll('.coin');
+            const btn = document.getElementById('toss-btn');
+            btn.disabled = true;
+
+            // Generate completely random 3D paths and rotations for each coin
+            coins.forEach(coin => {
+                // Clear symbols
+                coin.innerHTML = ''; 
+                
+                // Force a reflow to reset the animation so it plays every single click
+                coin.style.animation = 'none';
+                void coin.offsetWidth; 
+                
+                // Random multi-directional rotation (720deg to 1080deg)
+                const rx = (Math.random() * 720 + 720) * (Math.random() > 0.5 ? 1 : -1);
+                const ry = (Math.random() * 720 + 720) * (Math.random() > 0.5 ? 1 : -1);
+                const rz = (Math.random() * 360) * (Math.random() > 0.5 ? 1 : -1);
+                
+                // Random scatter translation (jump up, and scatter slightly left/right)
+                const tx = (Math.random() * 60 - 30); // -30px to 30px lateral
+                const ty = -(Math.random() * 40 + 40); // -40px to -80px vertical
+                
+                // Set the CSS variables for the keyframe to read
+                coin.style.setProperty('--rx', `${rx}deg`);
+                coin.style.setProperty('--ry', `${ry}deg`);
+                coin.style.setProperty('--rz', `${rz}deg`);
+                coin.style.setProperty('--tx', `${tx}px`);
+                coin.style.setProperty('--ty', `${ty}px`);
+                
+                // Apply the toss animation (duration 0.6s)
+                coin.style.animation = 'tossCoin 0.6s cubic-bezier(0.3, 0.1, 0.3, 1) forwards';
+            });
+
+            setTimeout(() => {
+                let sum = 0;
+                let coinResults = [];
+                for (let i = 0; i < 3; i++) {
+                    let val = Math.random() > 0.5 ? 3 : 2; 
+                    sum += val;
+                    coinResults.push(val);
+                }
+
+                coins.forEach((coin, index) => {
+                    coin.innerHTML = ''; 
+                    const symbol = document.createElement('div');
+                    if (coinResults[index] === 3) {
+                        symbol.className = 'symbol-yang';
+                    } else {
+                        symbol.className = 'symbol-yin';
+                    }
+                    coin.appendChild(symbol);
+                });
+
+                drawLine(sum);
+
+                currentLine++;
+                if (currentLine <= 6) {
+                    btn.disabled = false;
+                } else {
+                    btn.style.display = "none";
+                    document.getElementById('coins-container').style.display = "none";
+                    
+                    document.getElementById('ai-loading').style.display = "block";
+                    fetchAIReading(hexagramBinary, userQuestionText);
+                }
+            }, 600); // Wait for the 0.6s toss animation to complete
+        }
+
+        function generateHandDrawnPath(startX, endX, woggleHeight) {
+            const width = endX - startX;
+            const yMid = 10; 
+            const segments = Math.max(1, Math.floor(width / 30)); 
+            const segmentWidth = width / segments;
+            
+            let path = `M ${startX} ${(yMid + (Math.random() - 0.5) * woggleHeight).toFixed(2)}`;
+            
+            let currentX = startX;
+            for (let i = 0; i < segments; i++) {
+                const nextX = currentX + segmentWidth;
+                
+                const c1x = currentX + segmentWidth / 3;
+                const c2x = currentX + 2 * segmentWidth / 3;
+                
+                const c1y = yMid + (Math.random() - 0.5) * (woggleHeight * 2);
+                const c2y = yMid + (Math.random() - 0.5) * (woggleHeight * 2);
+                const endY = yMid + (Math.random() - 0.5) * woggleHeight;
+                
+                path += ` C ${c1x.toFixed(2)} ${c1y.toFixed(2)}, ${c2x.toFixed(2)} ${c2y.toFixed(2)}, ${nextX.toFixed(2)} ${endY.toFixed(2)}`;
+                currentX = nextX;
+            }
+            
+            return path;
+        }
+
+        function drawLine(sum) {
+            const hexArea = document.getElementById('hexagram');
+            const lineDiv = document.createElement('div');
+            lineDiv.classList.add('yao-line'); 
+
+            if (sum === 6 || sum === 9) {
+                lineDiv.classList.add('changing');
+            }
+
+            const svgNS = "http://www.w3.org/2000/svg";
+            const svg = document.createElementNS(svgNS, "svg");
+            svg.setAttribute("class", "wavy-line-svg");
+            svg.setAttribute("viewBox", "0 0 200 20");
+            svg.setAttribute("preserveAspectRatio", "none"); 
+
+            const duration = (10.0 + Math.random() * 6.0).toFixed(2); 
+            const delay = (Math.random() * -4).toFixed(2);
+            svg.style.animation = `subtleWave ${duration}s ease-in-out ${delay}s infinite`;
+
+            const naturalWobble = 2.5; 
+
+            if (sum === 6 || sum === 8) {
+                const path1Data = generateHandDrawnPath(0, 85, naturalWobble);
+                const path1 = document.createElementNS(svgNS, "path");
+                path1.setAttribute("class", "pen-path");
+                path1.setAttribute("d", path1Data);
+                path1.setAttribute("stroke-width", "4.5"); 
+                svg.appendChild(path1);
+
+                const path2Data = generateHandDrawnPath(115, 200, naturalWobble);
+                const path2 = document.createElementNS(svgNS, "path");
+                path2.setAttribute("class", "pen-path");
+                path2.setAttribute("d", path2Data);
+                path2.setAttribute("stroke-width", "4.5");
+                svg.appendChild(path2);
+                
+                hexagramBinary += "0"; 
+            } else {
+                const pathData = generateHandDrawnPath(0, 200, naturalWobble);
+                const path = document.createElementNS(svgNS, "path");
+                path.setAttribute("class", "pen-path");
+                path.setAttribute("d", pathData);
+                path.setAttribute("stroke-width", "4.5");
+                svg.appendChild(path);
+                
+                hexagramBinary += "1";
+            }
+
+            lineDiv.appendChild(svg);
+            hexArea.appendChild(lineDiv);
+        }
+
+        async function fetchAIReading(hexagramString, userQuestion) {
+            const baseHexagram = hexagramDatabase[hexagramString] || hexagramDatabase["default"];
+            
+            try {
+                // IMPORTANT: Replace this URL with your actual Cloudflare Worker URL
+                const workerUrl = 'https://iching-oracle.YOUR-USERNAME.workers.dev';
+                
+                /* // UNCOMMENT THIS TO CONNECT TO CLOUDFLARE
+                const response = await fetch(workerUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        hexagramTitle: baseHexagram.title,
+                        question: userQuestion 
+                    })
+                });
+
+                if (!response.ok) throw new Error("Network response was not ok");
+                const aiData = await response.json();
+                */
+
+                // Simulated API delay for demonstration
+                await new Promise(resolve => setTimeout(resolve, 2500));
+                
+                // Simulated AI Response
+                const aiData = {
+                    poem: "The river curves around the unyielding stone,\nReflecting heavens where the questions are thrown.\nYour query echoes in the quiet wood,\nWhere time unfolds exactly as it should.",
+                    desc: `In regard to your question: "${userQuestion}", the oracle indicates a time of deep observation rather than forceful action. Just as water naturally finds its way around obstacles, your path forward requires flexibility and patience. Trust that the answers are already forming beneath the surface of your current circumstances.`
+                };
+
+                displayResult(baseHexagram.title, aiData.poem, aiData.desc, baseHexagram.id);
+                
+            } catch (error) {
+                console.error("Error fetching AI reading:", error);
+                displayResult(
+                    baseHexagram.title, 
+                    "The winds of heaven are silent today,\nThe waters are still, the clouds are gray.", 
+                    "The oracle could not be reached at this moment. Please check your connection and consult again.",
+                    baseHexagram.id
+                );
+            }
+        }
+
+        function formatTextForTTS(text, containerElement, isPoem, currentOffset) {
+            containerElement.innerHTML = '';
+            const tokens = text.match(/\S+|\s+/g) || [];
+            
+            tokens.forEach(token => {
+                if (/\S/.test(token)) { 
+                    const span = document.createElement('span');
+                    span.className = 'tts-word';
+                    span.innerText = token;
+                    containerElement.appendChild(span);
+                    ttsWordSpans.push({
+                        element: span,
+                        start: currentOffset,
+                        end: currentOffset + token.length
+                    });
+                } else { 
+                    if (isPoem && token.includes('\n')) {
+                        const newlines = (token.match(/\n/g) || []).length;
+                        for(let i = 0; i < newlines; i++) {
+                            containerElement.appendChild(document.createElement('br'));
+                        }
+                    } else {
+                        containerElement.appendChild(document.createTextNode(token));
+                    }
+                }
+                currentOffset += token.length;
+            });
+            return currentOffset;
+        }
+
+        function displayResult(title, poem, desc, id) {
+            document.getElementById('ai-loading').style.display = "none";
+            document.getElementById('reading-title').innerText = title;
+            
+            ttsWordSpans = [];
+            let offset = 0;
+            
+            const poemText = poem + "\n\n";
+            const descText = desc;
+            rawTTSString = poemText + descText;
+
+            offset = formatTextForTTS(poemText, document.getElementById('reading-poem'), true, offset);
+            formatTextForTTS(descText, document.getElementById('reading-desc'), false, offset);
+            
+            document.getElementById('reading-result').style.display = 'block';
+
+            const newUrl = `${window.location.pathname}?reading=${id}`;
+            window.history.pushState({ path: newUrl }, '', newUrl);
+        }
+
+        function toggleTTS() {
+            const synth = window.speechSynthesis;
+            
+            if (synth.speaking) {
+                synth.cancel();
+                resetTTSUI();
+                return;
+            }
+
+            ttsUtterance = new SpeechSynthesisUtterance(rawTTSString);
+            ttsUtterance.rate = 0.75; 
+            
+            const voices = synth.getVoices();
+            const britishMaleVoice = voices.find(v => 
+                (v.lang.includes('en-GB') || v.lang.includes('en_GB')) && 
+                (v.name.toLowerCase().includes('male') || v.name.toLowerCase().includes('daniel') || v.name.toLowerCase().includes('ryan') || v.name.toLowerCase().includes('arthur'))
+            ) || voices.find(v => 
+                (v.lang.includes('en-GB') || v.lang.includes('en_GB')) && 
+                !v.name.toLowerCase().includes('female') && 
+                !v.name.toLowerCase().includes('serena') &&
+                !v.name.toLowerCase().includes('stephanie')
+            ) || voices.find(v => 
+                v.lang.startsWith('en') && v.name.toLowerCase().includes('male')
+            ) || voices[0];
+            
+            if (britishMaleVoice) {
+                ttsUtterance.voice = britishMaleVoice;
+            }
+
+            ttsUtterance.onboundary = (event) => {
+                if (event.name === 'word') {
+                    ttsWordSpans.forEach(item => {
+                        if (event.charIndex >= item.start && event.charIndex < item.end) {
+                            item.element.classList.add('active');
+                        } else {
+                            item.element.classList.remove('active');
+                        }
+                    });
+                }
+            };
+
+            ttsUtterance.onend = () => { resetTTSUI(); };
+            ttsUtterance.onerror = () => { resetTTSUI(); };
+
+            document.getElementById('tts-icon-play').style.display = 'none';
+            document.getElementById('tts-icon-stop').style.display = 'block';
+
+            synth.speak(ttsUtterance);
+        }
+
+        function resetTTSUI() {
+            document.getElementById('tts-icon-play').style.display = 'block';
+            document.getElementById('tts-icon-stop').style.display = 'none';
+            ttsWordSpans.forEach(item => item.element.classList.remove('active'));
+        }
+
+        function resetOracle() {
+            window.speechSynthesis.cancel();
+            resetTTSUI();
+
+            currentLine = 1;
+            hexagramBinary = "";
+            userQuestionText = "";
+            document.getElementById('user-question').value = "";
+            
+            document.getElementById('hexagram').innerHTML = "";
+            document.getElementById('reading-result').style.display = "none";
+            
+            document.getElementById('toss-btn').style.display = "inline-block";
+            document.getElementById('toss-btn').disabled = false;
+            
+            document.getElementById('coins-container').style.display = "flex";
+            document.querySelectorAll('.coin').forEach(coin => {
+                coin.innerHTML = '<div class="symbol-blank"></div>';
+                coin.style.animation = 'none'; // Clear the animation state for the next reading
+                coin.classList.remove('flip');
+            });
+            
+            document.getElementById('toss-section').style.display = 'none';
+            document.getElementById('question-section').style.display = 'flex';
+            
+            window.history.pushState({ path: window.location.pathname }, '', window.location.pathname);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
