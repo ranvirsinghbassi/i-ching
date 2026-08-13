@@ -7,7 +7,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&display=block" rel="stylesheet">
 
     <style>
         *, *::before, *::after { box-sizing: border-box; }
@@ -15,8 +15,8 @@
         :root {
             --bg-white: #FFFFFF;
             --text-black: #1A1A1A;
-            --vibrant-blue: #0044D6;
-            --vibrant-red: #D60036;
+            --vibrant-blue: #cde8f1;
+            --vibrant-red: #e1daf3;
             --blue-red-split: linear-gradient(90deg, var(--vibrant-blue) 50%, var(--vibrant-red) 50%);
             --pen-stroke-black: rgba(26, 26, 26, 0.95);
         }
@@ -35,13 +35,17 @@
 
         header {
             position: fixed;
-            top: clamp(1.5rem, 4vw, 3rem);
+            top: clamp(3.2rem, 8vw, 5rem); 
             left: 0;
             width: 100%;
             text-align: center;
-            padding: 0 1rem;
+            padding: 0 0.5rem; /* Reduced padding allows text to sit wider */
             z-index: 1; 
         }
+
+        
+
+
 
         /* --- THE COLOR SPLIT TARGETS --- */
         h1, .reading-title, .ai-loading, .text-btn, .tts-word.active {
@@ -53,10 +57,17 @@
         }
 
         h1 {
-            font-size: clamp(3rem, 8vw, 4.5rem);
+            font-size: clamp(3rem, 8vw, 4.5rem); 
             letter-spacing: 0.05em;
-            margin-bottom: -0.5rem; 
+            margin-bottom: 0.2rem; /* Fixed spacing between Title and Subtitle */
             font-weight: 700;
+            white-space: nowrap; 
+            transition: font-size 0.3s ease; 
+        }
+
+        h1.long-title {
+            /* Increased the vw from 6 to 8.5 so the text stretches wider on mobile */
+            font-size: clamp(1.6rem, 8.5vw, 4.5rem); 
         }
 
         .subtitle {
@@ -72,7 +83,8 @@
             background-color: var(--bg-white);
             max-width: 650px;
             width: 92%;
-            margin: clamp(10rem, 25vw, 14rem) auto 4rem auto; 
+            /* Increased the desktop max to 20rem for perfect breathing room */
+            margin: clamp(13rem, 25vw, 20rem) auto 4rem auto; 
             padding: clamp(2.5rem, 6vw, 4rem) clamp(1.5rem, 5vw, 2.5rem);
             border-radius: 15px 225px 12px 255px / 255px 12px 225px 15px;
             box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.06);
@@ -85,7 +97,7 @@
             flex-direction: column;
             align-items: center;
             width: 100%;
-            margin-bottom: 2rem;
+            margin-bottom: 0; /* Removed the extra 2rem of empty space! */
             animation: slideUpFade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
         }
 
@@ -125,6 +137,7 @@
             flex-direction: column;
             align-items: center;
             width: 100%;
+            min-height: 220px; /* NEW: Keeps the page height stable when buttons vanish */
             animation: slideUpFade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
         }
 
@@ -374,6 +387,286 @@
         }
         #toast.show { visibility: visible; opacity: 1; }
 
+        /* NEW: Styles for the meditative Zen Drawing */
+        .zen-drawing-container {
+            width: 100%;
+            text-align: center;
+            margin: 2.5rem 0; /* Creates space between poem and text */
+        }
+
+        .zen-drawing {
+            display: inline-block;
+            max-width: clamp(200px, 60%, 350px); /* Small but meaningful */
+            height: auto;
+            border-radius: 4px; /* Tiny subtle softness */
+            filter: contrast(1.1); /* Slightly pop the calligraphic ink */
+        }
+
+        /* FIX: The missing animation that makes the image visible! */
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        /* UPDATED: Top Right Auth Navigation with Frosted Glass */
+        .top-auth-nav {
+            position: fixed;
+            top: clamp(1rem, 3vw, 1.5rem);
+            right: clamp(1rem, 4vw, 2rem);
+            z-index: 100; 
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            
+            /* The Frosted Glass Effect */
+            background: rgba(250, 250, 250, 0.85); /* Slightly translucent grey/white */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px); /* Safari support */
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 0, 0, 0.03); /* Very faint border for structure */
+        }
+
+        .auth-link {
+            font-family: 'Caveat', cursive;
+            color: #666; 
+            text-decoration: none;
+            font-size: clamp(1.2rem, 3vw, 1.4rem); 
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .auth-divider {
+            color: #ccc;
+            font-size: 1.2rem;
+        }
+
+        .auth-link:hover {
+            background: var(--blue-red-split);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .auth-link {
+            font-family: 'Caveat', cursive;
+            color: #666; 
+            text-decoration: none;
+            font-size: clamp(1.1rem, 3vw, 1.3rem); /* Slightly smaller than subtitle */
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            transition: all 0.3s ease;
+        }
+
+        .auth-divider {
+            color: #ccc;
+            margin: 0 12px;
+            font-size: 1rem;
+        }
+
+        /* The 50/50 Gradient Hover Effect */
+        .auth-link:hover {
+            background: var(--blue-red-split);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* --- HISTORY LIST --- */
+        #history-section {
+            display: none; 
+            max-width: 650px; 
+            width: 92%; 
+            margin: 0 auto 4rem auto; 
+            animation: slideUpFade 0.8s forwards;
+            position: relative;
+            z-index: 5;
+        }
+        
+        .history-header {
+            font-size: clamp(1.4rem, 4vw, 1.8rem); 
+            color: #999; 
+            text-align: center; 
+            margin-bottom: 1.5rem; 
+            font-weight: 500;
+            letter-spacing: 0.05em;
+        }
+
+        .history-list {
+            display: flex; 
+            flex-direction: column; 
+            gap: 1rem;
+        }
+
+        .history-card {
+            background: var(--bg-white);
+            border-radius: 12px;
+            padding: 1.2rem 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.02);
+            text-align: left;
+        }
+
+        .history-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        .history-card-title {
+            font-family: 'Caveat', cursive;
+            font-weight: 700;
+            font-size: clamp(1.4rem, 4vw, 1.6rem);
+            background: var(--blue-red-split);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+            /* Removed the transition line here so it goes straight to purple! */
+        }
+
+        .history-card:hover .history-card-title {
+            /* Replaced the solid color with a 100% purple gradient to prevent the flash */
+            background: linear-gradient(90deg, var(--vibrant-red) 0%, var(--vibrant-red) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .history-card-question {
+            font-family: 'Caveat', cursive;
+            font-size: clamp(1.1rem, 3vw, 1.3rem);
+            color: #666;
+            font-style: italic;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis; /* Adds the "..." if the question is too long */
+        }
+
+        /* --- SEO TILE CONTAINER --- */
+        .seo-container {
+            position: relative;
+            z-index: 0; 
+            max-width: 1100px; 
+            width: 99%;
+            margin: -6rem auto 2rem auto; /* <-- The Magic Fix */
+            padding: clamp(5rem, 10vw, 7rem) clamp(2rem, 10vw, 6rem);
+            text-align: center;
+            opacity: 0;
+            animation: slideUpFade 1s ease 0.4s forwards; 
+        }
+
+        /* --- THE MAGIC CLOUD BACKGROUND --- */
+        .seo-container::before {
+            content: "";
+            position: absolute;
+            z-index: -1; /* Puts the cloud safely behind your text */
+            
+            /* Sizing the cloud slightly inward so the blur has room to fade */
+            top: 10%; bottom: 10%; left: 5%; right: 5%;
+            
+            background: rgba(255, 255, 255, 1);
+            
+            /* This creates a randomly warped, asymmetrical 'blob' shape */
+            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+            
+            /* This blurs the hard edges of the blob into a soft, misty cloud */
+            filter: blur(60px); 
+            
+            /* Optional: A very slow, subtle animation to make the cloud shift shapes! */
+            animation: morphCloud 15s ease-in-out infinite alternate;
+        }
+
+        /* --- SUBTLE CLOUD MOVEMENT (Optional but highly elegant) --- */
+        @keyframes morphCloud {
+            0% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
+            100% { border-radius: 60% 40% 30% 70% / 60% 40% 50% 40%; }
+        }
+        
+        .seo-container h2 {
+            font-size: clamp(2.2rem, 6vw, 2.8rem);
+            margin: 0 0 1.5rem 0;
+            
+            /* Applies the elegant 50/50 blue and red gradient split! */
+            background: var(--blue-red-split);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+            
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+        
+        .seo-container p {
+            font-size: clamp(1.3rem, 4vw, 1.6rem); /* Slightly larger for elegance */
+            line-height: 1.6;
+            color: #666; /* Softer grey so the colored heading pops */
+            margin: 0 0 1.5rem 0; 
+        }
+
+        .seo-container p:last-child {
+            margin-bottom: 0; 
+        }
+
+        /* --- SEO IMAGE & CAPTION --- */
+        .seo-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px; /* Adds a very slight, elegant rounding to the sharp corners */
+            margin: 2rem auto 0.5rem auto; /* Creates perfect breathing room above the image */
+            display: block;
+        }
+
+        .seo-container p.seo-caption {
+            font-size: clamp(0.85rem, 2.5vw, 1rem); /* Forces the text to be much smaller */
+            color: #999; /* Makes it a soft, muted grey */
+            margin: 0 0 2rem 0; /* Creates breathing room before the final paragraph */
+            letter-spacing: 0.05em;
+        }
+
+
+        /* --- MOBILE LAYOUT OVERRIDES --- */
+        @media (max-width: 650px) {
+            header {
+                /* Pulls the signed-out "I CHING" title up so it isn't too low */
+                top: 3.5rem; 
+            }
+            h1.long-title {
+                white-space: normal; 
+                line-height: 1; 
+                /* Pushes the signed-in name specifically down so it clears the nav bar */
+                margin-top: 2.5rem; 
+            }
+            .title-prefix {
+                display: block; 
+                font-size: clamp(1.9rem, 7.5vw, 2.5rem); 
+                letter-spacing: 0.15em; 
+                margin-bottom: -0.18rem; 
+            }
+            .title-name {
+                display: block; 
+                font-size: clamp(3rem, 16vw, 5rem); 
+                line-height: 0.9; 
+            }
+            .hide-on-mobile {
+                display: none !important; 
+            }
+            .oracle-container {
+                /* Ensures the white tile clears both the tall and short title states */
+                margin-top: 14rem; 
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -381,8 +674,8 @@
     <svg width="0" height="0" style="position:absolute;" aria-hidden="true" focusable="false">
         <defs>
             <linearGradient id="blueRedSplitGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="50%" stop-color="#0044D6" />
-                <stop offset="50%" stop-color="#D60036" />
+                <stop offset="50%" stop-color="#cde8f1" />
+                <stop offset="50%" stop-color="#e1daf3" />
             </linearGradient>
         </defs>
     </svg>
@@ -391,15 +684,26 @@
         <h1>I CHING</h1>
         <div class="subtitle">The Book of Changes</div>
     </header>
+
+
+    <div class="top-auth-nav" id="top-auth-nav">
+        </div>
     
     <div class="oracle-container">
+        
         <div id="readings-history"></div>
     
         <div id="initial-loading" class="ai-loading" style="display:none; text-align:center;">Retrieving scroll<span class="dots"></span></div>
     
         <div id="active-area">
+            <div id="cooldown-section" style="display: none; flex-direction: column; align-items: center; text-align: center; margin-bottom: 2rem; padding-bottom: 2rem; animation: slideUpFade 0.6s forwards;">
+                <div id="cooldown-timer" style="font-size: clamp(3rem, 8vw, 4.5rem); font-weight: 700; background: var(--blue-red-split); -webkit-background-clip: text; color: transparent; margin-bottom: 0.5rem; padding-right: 0.2em; overflow: visible;">00:00</div>
+                <div id="cooldown-message" style="font-size: clamp(1.2rem, 3.5vw, 1.5rem); color: #666; margin-bottom: 1.5rem; max-width: 90%; line-height: 1.5;"></div>
+                <div id="cooldown-action"></div>
+            </div>
+
             <div class="question-section" id="question-section">
-                <div class="question-label">Find the question from your heart...</div>
+                <div class="question-label">Dear, ask your question...</div>
                 <textarea id="user-question" class="question-input" rows="3" placeholder="What guidance do you seek today?"></textarea>
                 <button class="btn" onclick="startReading()">Seek Wisdom</button>
             </div>
@@ -413,16 +717,38 @@
                     <div class="coin"><div class="symbol-blank"></div></div>
                 </div>
                 <button class="btn" id="toss-btn" onclick="tossCoins()">Cast the Coins</button>
-                <div id="ai-loading" class="ai-loading">Consulting the oracle<span class="dots"></span></div>
+                <div id="ai-loading" class="ai-loading">Consulting the Oracle<span class="dots"></span></div>
             </div>
         </div>
     </div>
-    
+        
+    <!-- NEW CORRECT PLACEMENT: Inserted right below </div> of .oracle-container -->
+    <div id="history-section">
+        <div class="history-header">Your Recent Paths</div>
+        <div class="history-list" id="history-list"></div>
+    </div>
+
+    <div id="seo-section" class="seo-container">
+        <h2>Ancient Wisdom for the Modern Seeker</h2>
+        
+        <p>Welcome to The Book of Changes, a digital sanctuary where ancient clarity meets modern intuition. For over three millennia, the I Ching oracle has guided seekers through life's shifting currents.</p>
+        
+        <p>Here, you can cast the coins online and consult the hexagrams to unlock profound, personalized insights.</p>
+        
+        <img src="Path - Tim Lienvilay and Ranvir Singh Bassi.webp" alt="Path by Tim Lienvilay & Ranvir Singh Bassi" class="seo-image" loading="lazy">
+        <p class="seo-caption">&copy; Tim Lienvilay & Ranvir Singh Bassi, 2026. All Rights Reserved.</p>
+        
+        <p>Whether you seek guidance on relationships, career crossroads, or inner growth, our AI-trained divination model respectfully interprets the traditional changing lines with poetic depth. Embrace the stillness, ask your question, and let the wisdom of the ancients illuminate your path.</p>
+    </div>
+
     <div id="toast">Link copied to clipboard!</div>
 
     <script>
-        const workerUrl = 'https://iching-oracle-api.tim-and-ranvir.workers.dev'; 
-        
+        const workerUrl = 'https://iching-oracle-api.tim-and-ranvir.workers.dev';
+        // Pro is on the back burner until a payment provider is live again.
+        // Flip to true once that's wired up - it's the only change needed here.
+        const PRO_ENABLED = false;
+
         let currentLine = 1;
         let hexagramBinary = ""; 
         let userQuestionText = "";
@@ -511,10 +837,65 @@
                 document.getElementById('initial-loading').style.display = 'block';
                 loadSavedReading(savedId);
             }
+
+            // NEW: Check memory for an active cooldown timer!
+            const savedExpiry = localStorage.getItem('oracleCooldownExpiry');
+            const isGuest = localStorage.getItem('oracleCooldownGuest') === 'true';
+            
+            if (savedExpiry) {
+                const timeLeft = parseInt(savedExpiry) - Date.now();
+                if (timeLeft > 0) {
+                    startCooldown(timeLeft, isGuest); // Start timer immediately
+                } else {
+                    // Timer expired while they were away, clean up memory
+                    localStorage.removeItem('oracleCooldownExpiry');
+                    localStorage.removeItem('oracleCooldownGuest');
+                }
+            }
         };
 
         function resetOracle() {
             window.location.href = window.location.origin + window.location.pathname;
+        }
+
+        async function fetchUserHistory() {
+            // Don't show the history list if they are currently viewing a specific shared reading!
+            if (new URLSearchParams(window.location.search).get('id')) return;
+            if (!window.Clerk || !window.Clerk.session) return;
+            
+            try {
+                const token = await window.Clerk.session.getToken();
+                const response = await fetch(`${workerUrl}/history`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                // If Cloudflare fails, print the exact error code!
+                if (!response.ok) {
+                    console.error("Backend Error! Cloudflare returned Status:", response.status);
+                    return;
+                }
+                
+                const pastReadings = await response.json();
+                
+                // Print the actual database results so we can see them!
+                console.log("Here is the data from Cloudflare:", pastReadings); 
+                
+                if (pastReadings && pastReadings.length > 0) {
+                    const historyList = document.getElementById('history-list');
+                    historyList.innerHTML = pastReadings.map(item => `
+                        <a href="?id=${item.id}" class="history-card">
+                            <div class="history-card-content">
+                                <div class="history-card-title">${item.title}</div>
+                                <div class="history-card-question">"${item.question}"</div>
+                            </div>
+                            ${item.imageData && item.imageData !== "default_placeholder" ? `<img src="${item.imageData}" class="history-card-image" alt="Reading Art">` : ''}
+                        </a>
+                    `).join('');
+                    document.getElementById('history-section').style.display = 'block';
+                }
+            } catch (e) {
+                console.error("Network error fetching history:", e);
+            }
         }
 
         function consultAgain() {
@@ -529,7 +910,12 @@
             document.getElementById('toss-btn').style.display = "inline-block";
             document.getElementById('toss-btn').disabled = false;
             document.getElementById('coins-container').style.display = "flex";
-            document.querySelectorAll('.coin').forEach(c => c.innerHTML = '<div class="symbol-blank"></div>');
+            // FIX: Reset both the symbol AND the lingering animation CSS
+            document.querySelectorAll('.coin').forEach(c => {
+                c.innerHTML = '<div class="symbol-blank"></div>';
+                c.style.animation = 'none'; 
+                c.style.transform = 'none';
+        });
             
             const qLabel = document.querySelector('.question-label');
             const qInput = document.getElementById('user-question');
@@ -556,17 +942,88 @@
             }, 100);
         }
 
+        let countdownInterval;
+
+        function startCooldown(timeLeftMs, isGuest) {
+            // 1. Save to local storage so it survives page reloads
+            const expiryTime = Date.now() + timeLeftMs;
+            localStorage.setItem('oracleCooldownExpiry', expiryTime);
+            localStorage.setItem('oracleCooldownGuest', isGuest);
+
+            // 2. Hide the toss area AND the question section!
+            document.getElementById('toss-section').style.display = 'none';
+            document.getElementById('hexagram').style.display = 'none';
+            document.getElementById('ai-loading').style.display = 'none';
+            document.getElementById('question-section').style.display = 'none'; // <-- NEW LINE
+
+            // 3. Show the timer at the top
+            const cooldownSection = document.getElementById('cooldown-section');
+            const timerDisplay = document.getElementById('cooldown-timer');
+            const messageDisplay = document.getElementById('cooldown-message');
+            const actionDisplay = document.getElementById('cooldown-action');
+            
+            cooldownSection.style.display = 'flex';
+            
+            if (isGuest) {
+                messageDisplay.innerText = "Sign In for more Free Readings.";
+                actionDisplay.innerHTML = `<button class="btn" onclick="window.Clerk.openSignIn()">Sign In</button>`;
+            } else {
+                messageDisplay.innerText = "Upgrade to Pro for unlimited readings, your reading history and advanced analysis features.";
+                actionDisplay.innerHTML = `<button class="btn" onclick="openProModal()">Upgrade to Pro</button>`;
+            }
+
+            clearInterval(countdownInterval);
+
+            // 4. The Ticking Clock (Reading from memory)
+            const updateTimer = () => {
+                const now = Date.now();
+                const remaining = expiryTime - now;
+
+                if (remaining <= 0) {
+                    // Time is up! Hide the timer automatically and clear memory
+                    clearInterval(countdownInterval);
+                    localStorage.removeItem('oracleCooldownExpiry');
+                    localStorage.removeItem('oracleCooldownGuest');
+                    cooldownSection.style.display = 'none';
+                    document.getElementById('question-section').style.display = 'flex'; // <-- ADD THIS LINE
+                    return;
+                }
+                const minutes = Math.floor(remaining / 60000);
+                const seconds = Math.floor((remaining % 60000) / 1000);
+                timerDisplay.innerText = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            };
+            
+            updateTimer();
+            countdownInterval = setInterval(updateTimer, 1000);
+        }
+
+
         async function fetchAIReading(hexagramString, userQuestion) {
             const baseHexagram = hexagramDatabase[hexagramString] || hexagramDatabase["default"];
-            
-            // NEW: We hijack the ID field to attach the exact coin tosses (e.g. "45|888976") 
-            // so the worker saves it without needing a backend database update!
             const exactCastId = baseHexagram.id + "|" + currentCast.join(""); 
             
             try {
-                const response = await fetch(workerUrl, {
+                // 1. Anti-Hang Token Fetch (Fixes InPrivate Mode & Adblockers)
+                let token = null;
+                if (window.Clerk && window.Clerk.session) {
+                    try {
+                        // Force Clerk to give up if the browser blocks it for more than 2 seconds
+                        token = await Promise.race([
+                            window.Clerk.session.getToken(),
+                            new Promise((_, reject) => setTimeout(() => reject(new Error("Clerk Timeout")), 2000))
+                        ]);
+                    } catch (e) {
+                        console.warn("Clerk token blocked or timed out. Proceeding as Guest.");
+                    }
+                }
+
+                const requestHeaders = { 'Content-Type': 'application/json' };
+                if (token) requestHeaders['Authorization'] = `Bearer ${token}`;
+
+                // 2. Fetch with Safety Timeout for the Oracle
+                const fetchPromise = fetch(workerUrl, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: requestHeaders,
                     body: JSON.stringify({ 
                         hexagramId: exactCastId, 
                         hexagramTitle: baseHexagram.title,
@@ -575,30 +1032,49 @@
                     })
                 });
 
+                // Give the AI 20 seconds maximum to reply before triggering the fallback
+                const response = await Promise.race([
+                    fetchPromise,
+                    new Promise((_, reject) => setTimeout(() => reject(new Error("The Oracle is taking too long.")), 20000))
+                ]);
+
                 const aiData = await response.json();
                 
-                if (!response.ok || aiData.error) {
-                    throw new Error("The oracle's connection was disrupted.");
+                // 3. Handle Limits with Custom Modals AND On-Page Timer
+                if (aiData.error === "guest_limit_reached") {
+                    document.getElementById('ai-loading').style.display = "none";
+                    document.getElementById('guest-limit-modal').style.display = "flex"; 
+                    startCooldown(aiData.timeLeft, true); // true = isGuest
+                    return; 
                 }
 
+                if (aiData.error === "limit_reached") {
+                    document.getElementById('ai-loading').style.display = "none";
+                    document.getElementById('free-limit-modal').style.display = "flex"; 
+                    startCooldown(aiData.timeLeft, false); // false = isFreeUser
+                    return; 
+                }
+
+                // 4. Success!
                 currentSessionHistory = aiData.sessionHistory; 
-                displayResult(aiData);
+                displayResult(aiData, true); 
                 
             } catch (error) {
-                console.error("Reading failed:", error);
+                console.error("Reading failed/timed out:", error);
                 
+                // 5. Bulletproof Fallback
                 const randomId = Math.random().toString(36).substring(2, 10);
                 const fallbackReading = {
                     id: randomId,
-                    hexagramId: exactCastId, // Ensure fallback also gets the correct visual lines
+                    hexagramId: exactCastId, 
                     title: baseHexagram.title,
                     question: userQuestion,
                     poem: "The winds of heaven are silent today,\nThe waters are still, the clouds are gray.",
-                    desc: "The oracle could not be reached at this moment. The energies are clouded. Please take a breath and consult again in a few moments."
+                    desc: "The oracle's vision is clouded by digital interference. Please take a breath and consult again."
                 };
                 
                 currentSessionHistory.push(fallbackReading);
-                displayResult(fallbackReading);
+                displayResult(fallbackReading, true); 
             }
         }
 
@@ -647,35 +1123,44 @@
             return html;
         }
 
-        function displayResult(data) {
+        function displayResult(data, isNewReading = false) {
             document.getElementById('ai-loading').style.display = "none";
             document.getElementById('question-section').style.display = 'none';
+            // NEW: Instantly hide the invisible coin container to destroy the 220px gap!
+            document.getElementById('toss-section').style.display = 'none';
 
             const resultBlock = document.createElement('div');
             resultBlock.className = 'reading-result';
             resultBlock.style.display = 'block';
-            
-            const shareId = data.id;
-            window.history.pushState({}, '', `?id=${shareId}`);
 
-            rawTTSString = `${data.title}. ${data.poem}. ${data.desc}`;
+            // Shared Link Setup (Shared with ID handling)
+            const idToUse = data.id || "reading";
+            if (data.id) window.history.pushState({}, '', `?id=${data.id}`);
+
+            rawTTSString = `${data.title || "The Message"}. ${data.poem}. ${data.desc}`;
             ttsWordSpans = []; 
 
+            // Handle original/shared Hexagram HTML
             const hexArea = document.getElementById('hexagram');
             let currentHexagramHtml = hexArea.innerHTML;
-            hexArea.innerHTML = ""; 
-
-            // FIX: Uses the exact memory to perfectly reconstruct the changing lines!
-            if (!currentHexagramHtml.trim()) {
+            if (data.id && typeof generateExactLines === 'function') {
                 currentHexagramHtml = generateExactLines(data.hexagramId, data.title);
             }
+            hexArea.innerHTML = ""; 
+            hexArea.style.display = "none"; // <-- NEW: Kill the 200px ghost box!
 
+            // Shared logic: Display previous elements
+            let titleToDisplay = data.title || "A message from the Oracle";
+            let questionToDisplay = data.question || userQuestionText;
+
+            // --- START HTML BLOCK ---
+            // NEW: Added the zen-drawing-container between the poem and desc divs
             resultBlock.innerHTML = `
-                <div class="hexagram-display" style="display: flex; flex-direction: column-reverse; align-items: center; gap: 10px; margin-bottom: 4rem;">
+                <div class="hexagram-display" style="display: flex; flex-direction: column-reverse; align-items: center; gap: 10px; margin-bottom: 2rem;">
                     ${currentHexagramHtml}
                 </div>
-                <div class="reading-title">${data.title}</div>
-                <div class="reading-question-display">"${data.question}"</div>
+                <div class="reading-title">${titleToDisplay}</div>
+                <div class="reading-question-display">"${questionToDisplay}"</div>
                 
                 <button class="tts-btn active-tts-btn" onclick="toggleTTS(this)" aria-label="Read Aloud">
                     <svg class="tts-icon-play tts-icon" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
@@ -683,6 +1168,11 @@
                 </button>
 
                 <div class="reading-poem"></div>
+                
+                <div class="zen-drawing-container" style="display: none;">
+                    <img class="zen-drawing" alt="Meditative zen drawing inspired by the hexagram energy">
+                </div>
+
                 <div class="reading-desc"></div>
                 
                 <div class="session-controls" style="margin-top: 3rem; display: flex; flex-direction: column; align-items: center; gap: 1rem;">
@@ -690,21 +1180,57 @@
                     <button class="btn" onclick="consultAgain()">Continue Your Questioning</button>
                 </div>
             `;
+            // --- END HTML BLOCK ---
 
+            // TTS Formatting & Text Parsing (keep high quality)
             let poemContainer = resultBlock.querySelector('.reading-poem');
             let descContainer = resultBlock.querySelector('.reading-desc');
-            let currentOffset = data.title.length + 2; 
-            
+            let drawingContainer = resultBlock.querySelector('.zen-drawing-container');
+            let drawingImg = resultBlock.querySelector('.zen-drawing');
+
+            let currentOffset = (titleToDisplay).length + 2; 
             currentOffset = formatTextForTTS(data.poem, poemContainer, true, currentOffset);
             currentOffset += 2; 
             formatTextForTTS(data.desc, descContainer, false, currentOffset);
 
+            // NEW: IMAGE HANDLER
+            // Read the imageData (Base64) from the JSON response
+            if (data.imageData && data.imageData !== "default_placeholder") {
+                drawingImg.src = data.imageData; // Set image src to the base64 string
+                drawingContainer.style.display = "block"; // Show the container
+            } else {
+                drawingContainer.style.display = "none"; // Fail silently, no placeholder
+            }
+
             document.getElementById('readings-history').appendChild(resultBlock);
             
-            setTimeout(() => {
-                resultBlock.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 100);
-        }
+            // UX: Scroll target handling (Only animate for new readings)
+            if (isNewReading) {
+                
+                // 1. Instantly snap to the newly drawn Hexagram lines 
+                // This stops the browser from getting dragged to the bottom of the page
+                const blockTop = resultBlock.getBoundingClientRect().top + window.scrollY - 100;
+                window.scrollTo({ top: blockTop, behavior: 'auto' });
+
+                // 2. Smoothly glide down to rest perfectly on the reading title
+                setTimeout(() => {
+                    const titleElement = resultBlock.querySelector('.reading-title');
+                    
+                    if (titleElement) {
+                        const headerOffset = 130; 
+                        const elementPosition = titleElement.getBoundingClientRect().top;
+                        const offsetPosition = elementPosition + window.scrollY - headerOffset;
+                        
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: 'smooth'
+                        });
+                    }
+                }, 150);
+            }
+        } // <--- Critical closing bracket for displayResult
+            
+        
 
         async function loadSavedReading(id) {
             try {
@@ -713,6 +1239,10 @@
                 
                 document.getElementById('initial-loading').style.display = 'none';
                 document.getElementById('question-section').style.display = 'none';
+
+                // NEW: Hide SEO tile on shared links!
+                const seoSection = document.getElementById('seo-section');
+                if (seoSection) seoSection.style.display = 'none';
 
                 historyData.forEach((reading, index) => {
                     currentSessionHistory.push(reading);
@@ -734,9 +1264,17 @@
             document.getElementById('toss-section').style.display = 'flex';
             document.getElementById('hexagram').style.display = 'flex'; 
 
-            // NEW: Smoothly scroll the coin tossing section perfectly into the center of the screen
+            // NEW: Hide the SEO tile so the screen is clean for the reading!
+            const seoSection = document.getElementById('seo-section');
+            if (seoSection) seoSection.style.display = 'none';
+
+            // NEW: Hide the history list when they start asking a new question
+            const historySection = document.getElementById('history-section');
+            if (historySection) historySection.style.display = 'none';
+
+            // NEW: Smoothly center the entire active area (lines + buttons)
             setTimeout(() => {
-                document.getElementById('toss-section').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                document.getElementById('active-area').scrollIntoView({ behavior: 'smooth', block: 'center' });
             }, 100);
         }
 
@@ -876,7 +1414,8 @@
                     containerElement.appendChild(span);
                     ttsWordSpans.push({ element: span, start: currentOffset, end: currentOffset + token.length });
                 } else { 
-                    if (isPoem && token.includes('\n')) {
+                    // We removed "isPoem &&" here so the description can use \n\n for paragraphs!
+                    if (token.includes('\n')) {
                         const newlines = (token.match(/\n/g) || []).length;
                         for(let i = 0; i < newlines; i++) {
                             containerElement.appendChild(document.createElement('br'));
@@ -887,6 +1426,7 @@
                 }
                 currentOffset += token.length;
             });
+            
             return currentOffset;
         }
 
@@ -922,34 +1462,48 @@
 
             ttsUtterance = new SpeechSynthesisUtterance(rawTTSString);
             ttsUtterance.rate = 0.75; 
+            ttsUtterance.pitch = 0.9; // NEW: Slightly lower pitch for a softer, calmer feel
             
-            const voices = synth.getVoices();
-            const britishMaleVoice = voices.find(v => (v.lang.includes('en-GB') || v.lang.includes('en_GB')) && (v.name.toLowerCase().includes('male') || v.name.toLowerCase().includes('daniel') || v.name.toLowerCase().includes('ryan') || v.name.toLowerCase().includes('arthur'))) 
-            || voices.find(v => (v.lang.includes('en-GB') || v.lang.includes('en_GB')) && !v.name.toLowerCase().includes('female') && !v.name.toLowerCase().includes('serena')) 
-            || voices.find(v => v.lang.startsWith('en') && v.name.toLowerCase().includes('male')) 
-            || voices[0];
-            
-            if (britishMaleVoice) ttsUtterance.voice = britishMaleVoice;
+            // We wrap your voice logic in a function so we can wait for the browser to load them
+            const setVoiceAndSpeak = () => {
+                const voices = synth.getVoices();
+                
+                // Your existing logic (prioritizing British Male)
+                const britishMaleVoice = voices.find(v => (v.lang.includes('en-GB') || v.lang.includes('en_GB')) && (v.name.toLowerCase().includes('male') || v.name.toLowerCase().includes('daniel') || v.name.toLowerCase().includes('ryan') || v.name.toLowerCase().includes('arthur'))) 
+                || voices.find(v => (v.lang.includes('en-GB') || v.lang.includes('en_GB')) && !v.name.toLowerCase().includes('female') && !v.name.toLowerCase().includes('serena')) 
+                || voices.find(v => v.lang.startsWith('en') && v.name.toLowerCase().includes('male')) 
+                || voices[0];
+                
+                if (britishMaleVoice) ttsUtterance.voice = britishMaleVoice;
 
-            ttsUtterance.onboundary = (event) => {
-                if (event.name === 'word') {
-                    ttsWordSpans.forEach(item => {
-                        if (event.charIndex >= item.start && event.charIndex < item.end) {
-                            item.element.classList.add('active');
-                        } else {
-                            item.element.classList.remove('active');
-                        }
-                    });
-                }
+                // Keep your excellent word-highlighting logic!
+                ttsUtterance.onboundary = (event) => {
+                    if (event.name === 'word') {
+                        ttsWordSpans.forEach(item => {
+                            if (event.charIndex >= item.start && event.charIndex < item.end) {
+                                item.element.classList.add('active');
+                            } else {
+                                item.element.classList.remove('active');
+                            }
+                        });
+                    }
+                };
+
+                ttsUtterance.onend = () => { resetTTSUI(); };
+                ttsUtterance.onerror = () => { resetTTSUI(); };
+
+                playIcon.style.display = 'none';
+                stopIcon.style.display = 'block';
+
+                synth.speak(ttsUtterance);
             };
 
-            ttsUtterance.onend = () => { resetTTSUI(); };
-            ttsUtterance.onerror = () => { resetTTSUI(); };
-
-            playIcon.style.display = 'none';
-            stopIcon.style.display = 'block';
-
-            synth.speak(ttsUtterance);
+            // CRITICAL FIX: Handle asynchronous voice loading in browsers like Chrome
+            if (synth.getVoices().length === 0) {
+                synth.addEventListener('voiceschanged', setVoiceAndSpeak, { once: true });
+            } else {
+                setVoiceAndSpeak();
+            }
         }
 
         function resetTTSUI() {
@@ -958,6 +1512,187 @@
             document.querySelectorAll('.tts-word').forEach(w => w.classList.remove('active'));
         }
 
+        function openProModal(planType = 'monthly') {
+            // 1. Check if the user is actually signed in
+            if (!window.Clerk || !window.Clerk.user) {
+                window.Clerk.openSignIn();
+                return;
+            }
+
+            const userId = window.Clerk.user.id;
+
+            // 2. PASTE YOUR TWO LEMON SQUEEZY VARIANT IDs HERE
+            const monthlyVariantId = "YOUR_MONTHLY_ID_HERE";
+            const annualVariantId = "YOUR_ANNUAL_ID_HERE";
+
+            // 3. Choose the correct ID based on the button they clicked
+            const variantId = planType === 'annual' ? annualVariantId : monthlyVariantId;
+
+            // 4. Construct the URL and attach their Clerk ID (Lemon Squeezy custom data param)
+            const baseUrl = `https://YOUR-STORE.lemonsqueezy.com/checkout/buy/${variantId}`;
+            const checkoutUrl = `${baseUrl}?checkout[custom][user_id]=${encodeURIComponent(userId)}`;
+
+            // 5. Send them to checkout!
+            window.location.href = checkoutUrl;
+        }
+
+        // --- THE MELTING HEADER EFFECT ---
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            const scrollPos = window.scrollY;
+
+            // TWEAK THESE: Start fading at 20px of scroll, fully invisible by 180px
+            const startFade = 20;
+            const endFade = 180;
+            
+            // Calculate how far along the fade we are (0.0 to 1.0)
+            let progress = (scrollPos - startFade) / (endFade - startFade);
+            progress = Math.min(Math.max(progress, 0), 1); 
+
+            // Calculate the exact opacity and blur amount
+            const currentOpacity = 1 - progress;
+            const currentBlur = progress * 8; 
+
+            // Apply the effect ONLY to the Main Title
+            if (header) {
+                header.style.opacity = currentOpacity;
+                header.style.filter = `blur(${currentBlur}px)`;
+                // Disables clicks when invisible so it doesn't block the screen!
+                header.style.pointerEvents = currentOpacity < 0.1 ? 'none' : 'auto';
+            }
+            
+            // Note: The authNav block has been completely removed so your buttons stay perfectly sharp!
+        });
+
     </script>
+
+    <script
+      async
+      crossorigin="anonymous"
+      data-clerk-publishable-key="pk_live_Y2xlcmsudGhlYm9va29mY2hhbmdlcy5hcHAk"
+      src="https://clerk.thebookofchanges.app/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"
+      onload="startClerk()"
+    ></script>
+
+    <script>
+      const startClerk = async () => {
+        const Clerk = window.Clerk;
+
+        try {
+          // 1. Load the core environment with custom styling and text
+          await Clerk.load({
+            localization: {
+              signUp: { start: { subtitle: "By continuing, you agree to our Terms and consent to receive our monthly I Ching newsletter." } },
+              signIn: { start: { subtitle: "By continuing, you agree to our Terms and consent to receive our monthly I Ching newsletter." } }
+            },
+            appearance: {
+              variables: { fontFamily: "'Caveat', cursive", colorPrimary: "#e1daf3", colorText: "#1A1A1A", colorBackground: "#FAFAFA", colorInputBackground: "#FFFFFF", colorInputText: "#1A1A1A", borderRadius: "12px" },
+              elements: { card: { boxShadow: "0 4px 30px rgba(0, 0, 0, 0.08)" }, headerTitle: { fontSize: "2.5rem" }, headerSubtitle: { fontSize: "1.1rem" } }
+            }
+          });
+
+          // 2. NEW: The Bulletproof OAuth "Token Catcher"
+          const handleSSOCallback = async () => {
+              if (window.location.href.includes('sso-callback')) {
+                  try {
+                      await Clerk.handleRedirectCallback();
+                      // Grab the token and clean up the URL instantly!
+                      window.history.replaceState(null, '', window.location.pathname);
+                  } catch (e) {
+                      console.error("SSO Callback Error:", e);
+                  }
+              }
+          };
+
+          // Run immediately on load, and actively listen for silent URL changes
+          await handleSSOCallback();
+          window.addEventListener('hashchange', handleSSOCallback);
+          
+          const topAuthNav = document.getElementById('top-auth-nav');
+          const headerTitle = document.querySelector('header h1');
+          const headerSubtitle = document.querySelector('header .subtitle');
+
+          // 3. Make the UI actively listen for Sign In / Sign Out events!
+          Clerk.addListener(({ user }) => {
+              if (user) {
+                  // If they just signed in, wipe the guest penalty box locally!
+                  if (localStorage.getItem('oracleCooldownGuest') === 'true') {
+                      localStorage.removeItem('oracleCooldownExpiry');
+                      localStorage.removeItem('oracleCooldownGuest');
+                      
+                      const cooldownSection = document.getElementById('cooldown-section');
+                      if (cooldownSection) cooldownSection.style.display = 'none';
+                      
+                      const questionSection = document.getElementById('question-section');
+                      if (questionSection) questionSection.style.display = 'flex';
+                  }
+                  
+                  const firstName = user.firstName || "Seeker";
+                  
+                  // NEW: Wrap the text in spans (with a space between them for desktop!)
+                  headerTitle.innerHTML = `<span class="title-prefix">THE CHANGES OF</span> <span class="title-name">${firstName.toUpperCase()}</span>`;
+                  headerTitle.classList.add('long-title'); 
+                  
+                  headerSubtitle.innerText = "Your Story Unfolds";
+                  headerSubtitle.classList.add('hide-on-mobile'); // Hides this on mobile only!
+                  
+                  // This shows both Upgrade and Sign Out for free logged-in users!
+                  topAuthNav.innerHTML = `
+                      ${PRO_ENABLED ? '<a onclick="openProModal()" class="auth-link">Upgrade to Pro</a><span class="auth-divider">/</span>' : ''}
+                      <a onclick="window.Clerk.signOut()" class="auth-link">Sign Out</a>
+                  `;
+
+                  // Fetch and show their history!
+                  fetchUserHistory();
+                  
+              } else {
+                  headerTitle.innerText = "I CHING";
+                  headerTitle.classList.remove('long-title'); 
+                  
+                  headerSubtitle.innerText = "The Book of Changes";
+                  headerSubtitle.classList.remove('hide-on-mobile'); // Brings the subtitle back for Guests
+                  
+                  topAuthNav.innerHTML = `
+                    ${PRO_ENABLED ? '<a onclick="openProModal()" class="auth-link">Upgrade to Pro</a><span class="auth-divider">/</span>' : ''}
+                    <a onclick="window.Clerk.openSignIn()" class="auth-link">Sign In</a>
+                  `;
+              }
+          });
+
+        } catch (err) {
+          console.error('Error starting Clerk: ', err);
+        }
+      };
+    </script>
+    
+
+    <div id="guest-limit-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(250, 250, 250, 0.85); backdrop-filter: blur(12px); z-index: 1000; justify-content: center; align-items: center; font-family: 'Caveat', cursive;">
+    <div style="background: white; padding: 3rem; border-radius: 20px; text-align: center; max-width: 450px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.05);">
+        <h2 style="font-size: 2.5rem; margin-bottom: 0.5rem; margin-top: 0; background: linear-gradient(90deg, #cde8f1 50%, #e1daf3 50%); -webkit-background-clip: text; color: transparent;">The Oracle is Resting</h2>
+        <p style="font-size: 1.4rem; color: #666; margin-bottom: 2rem;">You are out of free guest readings for the next 1 hour.<br><br>Sign in now to instantly receive more free readings!</p>
+        <button class="btn" style="width: 100%; margin: 0;" onclick="document.getElementById('guest-limit-modal').style.display='none'; window.Clerk.openSignIn();">Sign In</button>
+        <br>
+        <button class="text-btn" style="margin-top: 1rem; font-size: 1.2rem; color: #999;" onclick="document.getElementById('guest-limit-modal').style.display='none';">Close</button>
+    </div>
+    </div>
+
+    <div id="free-limit-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(250, 250, 250, 0.85); backdrop-filter: blur(12px); z-index: 1000; justify-content: center; align-items: center; font-family: 'Caveat', cursive;">
+        <div style="background: white; padding: 3rem; border-radius: 20px; text-align: center; max-width: 450px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.05);">
+            <h2 style="font-size: 2.5rem; margin-bottom: 0.5rem; margin-top: 0; background: linear-gradient(90deg, #cde8f1 50%, #e1daf3 50%); -webkit-background-clip: text; color: transparent;">Seek Deeper Wisdom</h2>
+            <p style="font-size: 1.4rem; color: #666; margin-bottom: 2rem;">You are out of free readings for the next 30 minutes.<br><br>Wait for the stars to align, or Upgrade to Pro for unlimited access.</p>
+            
+            <!-- Primary Action: Annual Plan (Best Value Stacked Top) -->
+            <button class="btn" style="width: 100%; margin: 0 0 0.75rem 0;" onclick="document.getElementById('free-limit-modal').style.display='none'; openProModal('annual');">Upgrade to Pro (A$39.99 / Yr)</button>
+            
+            <!-- Secondary Action: Monthly Plan (Muted text link layout) -->
+            <button class="text-btn" style="width: 100%; display: block; margin: 0 auto 1.5rem auto; font-size: 1.3rem; color: #666;" onclick="document.getElementById('free-limit-modal').style.display='none'; openProModal('monthly');">Or A$4.99 / Month</button>
+            
+            <hr style="border: none; border-top: 1px solid rgba(0,0,0,0.05); margin: 1rem 0;">
+            
+            <!-- Close Button -->
+            <button class="text-btn" style="margin-top: 0.5rem; font-size: 1.2rem; color: #999;" onclick="document.getElementById('free-limit-modal').style.display='none';">Close</button>
+        </div>
+    </div>
+
 </body>
 </html>

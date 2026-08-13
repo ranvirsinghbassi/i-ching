@@ -1,0 +1,13 @@
+name = "iching-oracle-api"
+main = "index.js"
+compatibility_date = "2024-05-17"
+compatibility_flags = ["nodejs_compat"] 
+
+# Re-connect the Cloudflare AI
+[ai]
+binding = "AI"
+
+# Re-connect your KV Database
+[[kv_namespaces]]
+binding = "READINGS_KV"
+id = "096c2ade100741e5bb8d2e285986db8f"
