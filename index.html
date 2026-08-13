@@ -2,9 +2,39 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>The I Ching | Oracle</title>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Book of Changes | Free I Ching Oracle & Readings</title>
+    <meta name="description" content="Consult the I Ching, the ancient Chinese oracle of change. Ask a question, cast your hexagram, and receive a unique AI-guided reading rooted in thousands of years of wisdom. Free to try, no account required.">
+    <link rel="canonical" href="https://thebookofchanges.app/">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#FAFAFA">
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="The Book of Changes">
+    <meta property="og:title" content="The Book of Changes | Free I Ching Oracle & Readings">
+    <meta property="og:description" content="Consult the I Ching, the ancient Chinese oracle of change. Ask a question, cast your hexagram, and receive a unique AI-guided reading rooted in thousands of years of wisdom.">
+    <meta property="og:url" content="https://thebookofchanges.app/">
+    <meta property="og:image" content="https://thebookofchanges.app/iching-art.webp">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="The Book of Changes | Free I Ching Oracle & Readings">
+    <meta name="twitter:description" content="Consult the I Ching, the ancient Chinese oracle of change. Ask a question, cast your hexagram, and receive a unique AI-guided reading rooted in thousands of years of wisdom.">
+    <meta name="twitter:image" content="https://thebookofchanges.app/iching-art.webp">
+
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%23FAFAFA' stroke='%231A1A1A' stroke-width='1.5'/%3E%3Crect x='8' y='10' width='16' height='3' fill='%231A1A1A'/%3E%3Crect x='8' y='15' width='6' height='3' fill='%231A1A1A'/%3E%3Crect x='18' y='15' width='6' height='3' fill='%231A1A1A'/%3E%3Crect x='8' y='20' width='16' height='3' fill='%231A1A1A'/%3E%3C/svg%3E">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "The Book of Changes",
+      "url": "https://thebookofchanges.app/",
+      "description": "Consult the I Ching, the ancient Chinese oracle of change. Ask a question, cast your hexagram, and receive a unique AI-guided reading rooted in thousands of years of wisdom.",
+      "applicationCategory": "LifestyleApplication",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    }
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&display=block" rel="stylesheet">
@@ -876,10 +906,7 @@
                 }
                 
                 const pastReadings = await response.json();
-                
-                // Print the actual database results so we can see them!
-                console.log("Here is the data from Cloudflare:", pastReadings); 
-                
+
                 if (pastReadings && pastReadings.length > 0) {
                     const historyList = document.getElementById('history-list');
                     historyList.innerHTML = pastReadings.map(item => `
@@ -965,8 +992,8 @@
             cooldownSection.style.display = 'flex';
             
             if (isGuest) {
-                messageDisplay.innerText = "Sign In for more Free Readings.";
-                actionDisplay.innerHTML = `<button class="btn" onclick="window.Clerk.openSignIn()">Sign In</button>`;
+                messageDisplay.innerText = "Sign Up for Unlimited Free Readings.";
+                actionDisplay.innerHTML = `<button class="btn" onclick="window.Clerk.openSignUp()">Sign Up</button>`;
             } else {
                 messageDisplay.innerText = "Upgrade to Pro for unlimited readings, your reading history and advanced analysis features.";
                 actionDisplay.innerHTML = `<button class="btn" onclick="openProModal()">Upgrade to Pro</button>`;
@@ -1653,7 +1680,7 @@
                   headerSubtitle.classList.remove('hide-on-mobile'); // Brings the subtitle back for Guests
                   
                   topAuthNav.innerHTML = `
-                    ${PRO_ENABLED ? '<a onclick="openProModal()" class="auth-link">Upgrade to Pro</a><span class="auth-divider">/</span>' : ''}
+                    ${PRO_ENABLED ? '<a onclick="openProModal()" class="auth-link">Upgrade to Pro</a><span class="auth-divider">/</span>' : '<a onclick="window.Clerk.openSignUp()" class="auth-link">Sign Up</a><span class="auth-divider">/</span>'}
                     <a onclick="window.Clerk.openSignIn()" class="auth-link">Sign In</a>
                   `;
               }
@@ -1669,8 +1696,8 @@
     <div id="guest-limit-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(250, 250, 250, 0.85); backdrop-filter: blur(12px); z-index: 1000; justify-content: center; align-items: center; font-family: 'Caveat', cursive;">
     <div style="background: white; padding: 3rem; border-radius: 20px; text-align: center; max-width: 450px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.05);">
         <h2 style="font-size: 2.5rem; margin-bottom: 0.5rem; margin-top: 0; background: linear-gradient(90deg, #cde8f1 50%, #e1daf3 50%); -webkit-background-clip: text; color: transparent;">The Oracle is Resting</h2>
-        <p style="font-size: 1.4rem; color: #666; margin-bottom: 2rem;">You are out of free guest readings for the next 1 hour.<br><br>Sign in now to instantly receive more free readings!</p>
-        <button class="btn" style="width: 100%; margin: 0;" onclick="document.getElementById('guest-limit-modal').style.display='none'; window.Clerk.openSignIn();">Sign In</button>
+        <p style="font-size: 1.4rem; color: #666; margin-bottom: 2rem;">You are out of free guest readings for the next 1 hour.<br><br>Sign up now for unlimited free readings!</p>
+        <button class="btn" style="width: 100%; margin: 0;" onclick="document.getElementById('guest-limit-modal').style.display='none'; window.Clerk.openSignUp();">Sign Up</button>
         <br>
         <button class="text-btn" style="margin-top: 1rem; font-size: 1.2rem; color: #999;" onclick="document.getElementById('guest-limit-modal').style.display='none';">Close</button>
     </div>

@@ -1,0 +1,7 @@
+api/
+.git/
+.gitignore
+.assetsignore
+.DS_Store
+wrangler.toml
+copy of worker.js
