@@ -1,5 +1,6 @@
 api/
 .git/
+.wrangler/
 .gitignore
 .assetsignore
 .DS_Store

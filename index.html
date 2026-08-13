@@ -1059,32 +1059,39 @@
                     })
                 });
 
-                // Give the AI 20 seconds maximum to reply before triggering the fallback
+                // Give the AI 25 seconds maximum to reply before triggering the fallback
                 const response = await Promise.race([
                     fetchPromise,
-                    new Promise((_, reject) => setTimeout(() => reject(new Error("The Oracle is taking too long.")), 20000))
+                    new Promise((_, reject) => setTimeout(() => reject(new Error("The Oracle is taking too long.")), 25000))
                 ]);
 
                 const aiData = await response.json();
-                
+
                 // 3. Handle Limits with Custom Modals AND On-Page Timer
                 if (aiData.error === "guest_limit_reached") {
                     document.getElementById('ai-loading').style.display = "none";
-                    document.getElementById('guest-limit-modal').style.display = "flex"; 
+                    document.getElementById('guest-limit-modal').style.display = "flex";
                     startCooldown(aiData.timeLeft, true); // true = isGuest
-                    return; 
+                    return;
                 }
 
                 if (aiData.error === "limit_reached") {
                     document.getElementById('ai-loading').style.display = "none";
-                    document.getElementById('free-limit-modal').style.display = "flex"; 
+                    document.getElementById('free-limit-modal').style.display = "flex";
                     startCooldown(aiData.timeLeft, false); // false = isFreeUser
-                    return; 
+                    return;
+                }
+
+                // Any other non-2xx response is a genuine backend failure (not a
+                // rate limit) - fall through to the catch block's graceful fallback
+                // instead of rendering a broken/empty reading.
+                if (!response.ok) {
+                    throw new Error(aiData.error || `Request failed with status ${response.status}`);
                 }
 
                 // 4. Success!
-                currentSessionHistory = aiData.sessionHistory; 
-                displayResult(aiData, true); 
+                currentSessionHistory = aiData.sessionHistory;
+                displayResult(aiData, true);
                 
             } catch (error) {
                 console.error("Reading failed/timed out:", error);

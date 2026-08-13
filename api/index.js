@@ -113,6 +113,129 @@ async function appendToUserHistory(env, userId, reading) {
   await env.READINGS_KV.put(key, JSON.stringify(existing.slice(0, HISTORY_LIMIT)));
 }
 
+async function fetchWithTimeout(url, options, timeoutMs) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(url, { ...options, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+// Only the primary model plus one fast backup - the other Gemini models this
+// used to cycle through are capped at 20 requests/day, which makes them
+// nearly useless as fallbacks while adding real latency when the primary is
+// having a slow moment.
+const GEMINI_TIMEOUT_MS = 6000;
+const GEMINI_MODELS = [
+  "gemini-3.1-flash-lite", // 500 RPD | 15 RPM
+  "gemini-2.5-flash-lite"  // 20 RPD | 10 RPM
+];
+
+async function generateReadingText({ systemPromptText, historyContext, hexagramTitle, question, changingLinesContext, env, parsedCache }) {
+  for (const model of GEMINI_MODELS) {
+    try {
+      const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${env.GEMINI_API_KEY}`;
+
+      const geminiResponse = await fetchWithTimeout(geminiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: `${systemPromptText}\n\n${historyContext}\n\nCurrent Hexagram: ${hexagramTitle}. Current Question: "${question}".${changingLinesContext}\nCreate unique reading.` }] }],
+          generationConfig: { responseMimeType: "application/json" }
+        })
+      }, GEMINI_TIMEOUT_MS);
+
+      const data = await geminiResponse.json();
+
+      if (geminiResponse.ok && data.candidates) {
+        const aiTextRaw = data.candidates[0].content.parts[0].text.replace(/```json/g, "").replace(/```/g, "").trim();
+        return JSON.parse(aiTextRaw);
+      } else if (geminiResponse.status === 429 || geminiResponse.status >= 500) {
+        continue;
+      } else {
+        throw new Error("Fatal Gemini API error.");
+      }
+    } catch (e) {
+      console.error(`Fetch failed for ${model}:`, e.message);
+    }
+  }
+
+  // ==========================================
+  // CLOUDFLARE AI TEXT FALLBACK
+  // ==========================================
+  try {
+    const messages = [
+      { role: "system", content: systemPromptText },
+      { role: "user", content: `${historyContext}\n\nCurrent Hexagram: ${hexagramTitle}. Current Question: "${question}".${changingLinesContext}\nReturn strictly JSON: {"poem": "line 1\\nline 2\\nline 3\\nline 4", "desc": "..."}` }
+    ];
+
+    const cfAiResponse = await env.AI.run("@cf/meta/llama-3.1-8b-instruct-fast", { messages });
+
+    // This model returns .response as an already-parsed object when it
+    // sticks to the requested JSON shape, but fall back to parsing it as
+    // text in case that ever changes.
+    if (cfAiResponse.response && typeof cfAiResponse.response === "object" && cfAiResponse.response.poem && cfAiResponse.response.desc) {
+      return cfAiResponse.response;
+    } else if (typeof cfAiResponse.response === "string") {
+      let cleanText = cfAiResponse.response.replace(/```json/gi, "").replace(/```/g, "").trim();
+      const jsonMatch = cleanText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        return JSON.parse(jsonMatch[0]);
+      }
+      throw new Error("Cloudflare AI did not return valid JSON.");
+    } else {
+      throw new Error("Cloudflare AI did not return valid JSON.");
+    }
+  } catch (cfError) {
+    console.error("Cloudflare AI Fallback Failed:", cfError.message);
+
+    // ULTIMATE FALLBACK: Both AIs failed. Use the Cache!
+    if (parsedCache) {
+      console.log("Using Cached Text as final safety net.");
+      return { poem: parsedCache.poem, desc: parsedCache.desc };
+    }
+    throw new Error("The oracle is completely unreachable at this time.");
+  }
+}
+
+async function generateHexagramImage(hexagramTitle, question, env, parsedCache) {
+  try {
+    // Your custom prompt is fully preserved here!
+    const imagePrompt = `Truly random animal takes prominence and truly random element. Organic, fluid, loose, isolated floating on a pure stark white background. No borders, no frames, no geometric shapes, no hard edges. no off-whites or grey, only pure white. The artwork features a dynamic, free-flowing visual metaphor deeply relevant to the I Ching hexagram '${hexagramTitle}' and tailored to the user's question '${question}'. It creatively synthesizes a relevant totem animal and totem element in a natural, unconstrained way. Minimal, subtle blending organically. High-contrast with significant white negative space around the central subject. only two colours allowed #000000 and #ffffff Exclude all text, letters, or symbols.`;
+
+    // Call Cloudflare's lightning fast image generation model
+    const cfImageRaw = await env.AI.run("@cf/bytedance/stable-diffusion-xl-lightning", {
+      prompt: imagePrompt
+    });
+
+    // Wrap the raw AI output in a standard Response object to safely extract the buffer
+    const imgBuffer = await new Response(cfImageRaw).arrayBuffer();
+    const imgUint8 = new Uint8Array(imgBuffer);
+
+    // Convert to Base64 in safe chunks so we don't crash the Worker's memory limit
+    let binary = "";
+    const chunkSize = 8192;
+    for (let i = 0; i < imgUint8.length; i += chunkSize) {
+      binary += String.fromCharCode.apply(null, imgUint8.subarray(i, i + chunkSize));
+    }
+
+    // Format as a proper Image URL for the frontend
+    return `data:image/png;base64,${btoa(binary)}`;
+
+  } catch (imageError) {
+    console.error("Image gen failed:", imageError.message);
+
+    // ULTIMATE FALLBACK: Image gen failed. Use the Cache!
+    if (parsedCache && parsedCache.imageData) {
+      console.log("Using Cached Image as final safety net.");
+      return parsedCache.imageData;
+    }
+    return null;
+  }
+}
+
 async function handleCreateReading(request, env) {
   const identity = await identifyUser(request, env);
   if (identity.authError) {
@@ -182,127 +305,14 @@ async function handleCreateReading(request, env) {
 
     const systemPromptText = `You are a wise, classical I Ching oracle. Respond strictly in valid JSON format. Provide two keys: 'poem' (a unique 4-line poetic summary) and 'desc' (a philosophical paragraph interpretation tailored to the question). Keep the tone poetic and calligraphic. CRITICAL: Format 'poem' as a SINGLE continuous string of text. Do NOT use physical line breaks. Use the literal characters '\\n' to separate the lines of the poem.`;
 
-    let aiData = null;
-    let geminiFailed = false;
+    // Image generation doesn't depend on the text result, so kick it off
+    // immediately instead of waiting for the text waterfall to finish first -
+    // this roughly halves total latency on the common path.
+    const imagePromise = generateHexagramImage(hexagramTitle, question, env, parsedCache);
 
-    // ==========================================
-    // STRATEGY 2: THE MODEL WATERFALL (FREE TIER ONLY)
-    // ==========================================
-    const geminiModels = [
-      "gemini-3.1-flash-lite", // 500 RPD | 15 RPM
-      "gemini-2.5-flash-lite", // 20 RPD | 10 RPM
-      "gemini-3-flash",        // 20 RPD | 5 RPM
-      "gemini-2.5-flash"       // 20 RPD | 5 RPM
-    ];
+    const aiData = await generateReadingText({ systemPromptText, historyContext, hexagramTitle, question, changingLinesContext, env, parsedCache });
 
-    for (const model of geminiModels) {
-      try {
-        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${env.GEMINI_API_KEY}`;
-
-        const geminiResponse = await fetch(geminiUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: `${systemPromptText}\n\n${historyContext}\n\nCurrent Hexagram: ${hexagramTitle}. Current Question: "${question}".${changingLinesContext}\nCreate unique reading.` }] }],
-            generationConfig: { responseMimeType: "application/json" }
-          })
-        });
-
-        const data = await geminiResponse.json();
-
-        if (geminiResponse.ok && data.candidates) {
-          const aiTextRaw = data.candidates[0].content.parts[0].text.replace(/```json/g, "").replace(/```/g, "").trim();
-          aiData = JSON.parse(aiTextRaw);
-          break;
-        } else if (geminiResponse.status === 429 || geminiResponse.status >= 500) {
-          continue;
-        } else {
-          throw new Error("Fatal Gemini API error.");
-        }
-      } catch (e) {
-        console.error(`Fetch failed for ${model}:`, e.message);
-      }
-    }
-
-    if (!aiData) geminiFailed = true;
-
-    // ==========================================
-    // STRATEGY 3: CLOUDFLARE AI TEXT FALLBACK
-    // ==========================================
-    if (!aiData || geminiFailed) {
-      try {
-        const messages = [
-          { role: "system", content: systemPromptText },
-          { role: "user", content: `${historyContext}\n\nCurrent Hexagram: ${hexagramTitle}. Current Question: "${question}".${changingLinesContext}\nReturn strictly JSON: {"poem": "line 1\\nline 2\\nline 3\\nline 4", "desc": "..."}` }
-        ];
-
-        const cfAiResponse = await env.AI.run("@cf/meta/llama-3.1-8b-instruct-fast", { messages });
-
-        // This model returns .response as an already-parsed object when it
-        // sticks to the requested JSON shape, but fall back to parsing it as
-        // text in case that ever changes.
-        if (cfAiResponse.response && typeof cfAiResponse.response === "object" && cfAiResponse.response.poem && cfAiResponse.response.desc) {
-          aiData = cfAiResponse.response;
-        } else if (typeof cfAiResponse.response === "string") {
-          let cleanText = cfAiResponse.response.replace(/```json/gi, "").replace(/```/g, "").trim();
-          const jsonMatch = cleanText.match(/\{[\s\S]*\}/);
-          if (jsonMatch) {
-            aiData = JSON.parse(jsonMatch[0]);
-          } else {
-            throw new Error("Cloudflare AI did not return valid JSON.");
-          }
-        } else {
-          throw new Error("Cloudflare AI did not return valid JSON.");
-        }
-      } catch (cfError) {
-        console.error("Cloudflare AI Fallback Failed:", cfError.message);
-
-        // ULTIMATE FALLBACK: Both AIs failed. Use the Cache!
-        if (parsedCache) {
-          console.log("Using Cached Text as final safety net.");
-          aiData = { poem: parsedCache.poem, desc: parsedCache.desc };
-        } else {
-          throw new Error("The oracle is completely unreachable at this time.");
-        }
-      }
-    }
-
-    // ==========================================
-    // STRATEGY 4: GENERATE THE ZEN DRAWING
-    // ==========================================
-    let base64Image = null;
-    try {
-      // Your custom prompt is fully preserved here!
-      const imagePrompt = `Truly random animal takes prominence and truly random element. Organic, fluid, loose, isolated floating on a pure stark white background. No borders, no frames, no geometric shapes, no hard edges. no off-whites or grey, only pure white. The artwork features a dynamic, free-flowing visual metaphor deeply relevant to the I Ching hexagram '${hexagramTitle}' and tailored to the user's question '${question}'. It creatively synthesizes a relevant totem animal and totem element in a natural, unconstrained way. Minimal, subtle blending organically. High-contrast with significant white negative space around the central subject. only two colours allowed #000000 and #ffffff Exclude all text, letters, or symbols.`;
-
-      // Call Cloudflare's lightning fast image generation model
-      const cfImageRaw = await env.AI.run("@cf/bytedance/stable-diffusion-xl-lightning", {
-        prompt: imagePrompt
-      });
-
-      // Wrap the raw AI output in a standard Response object to safely extract the buffer
-      const imgBuffer = await new Response(cfImageRaw).arrayBuffer();
-      const imgUint8 = new Uint8Array(imgBuffer);
-
-      // Convert to Base64 in safe chunks so we don't crash the Worker's memory limit
-      let binary = "";
-      const chunkSize = 8192;
-      for (let i = 0; i < imgUint8.length; i += chunkSize) {
-        binary += String.fromCharCode.apply(null, imgUint8.subarray(i, i + chunkSize));
-      }
-
-      // Format as a proper Image URL for the frontend
-      base64Image = `data:image/png;base64,${btoa(binary)}`;
-
-    } catch (imageError) {
-      console.error("Image gen failed:", imageError.message);
-
-      // ULTIMATE FALLBACK: Image gen failed. Use the Cache!
-      if (parsedCache && parsedCache.imageData) {
-        console.log("Using Cached Image as final safety net.");
-        base64Image = parsedCache.imageData;
-      }
-    }
+    const base64Image = await imagePromise;
 
     // ==========================================
     // FINALIZE & SAVE
