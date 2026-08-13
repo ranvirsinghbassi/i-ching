@@ -1,4 +1,5 @@
 api/
+hexagrams-src/
 .git/
 .wrangler/
 .gitignore

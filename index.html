@@ -35,9 +35,38 @@
     }
     </script>
 
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is this I Ching oracle free to use?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. Guests can cast a limited number of free readings, and creating a free account unlocks unlimited readings along with a saved history of your past consultations." }
+        },
+        {
+          "@type": "Question",
+          "name": "What are hexagrams and changing lines?",
+          "acceptedAnswer": { "@type": "Answer", "text": "A hexagram is a stack of six lines, each either Yin (broken) or Yang (solid), formed by casting coins six times. Some lines are changing, meaning they are transforming into their opposite, which points to a second, resulting hexagram describing where the situation is heading." }
+        },
+        {
+          "@type": "Question",
+          "name": "How is this different from a fortune teller?",
+          "acceptedAnswer": { "@type": "Answer", "text": "The I Ching doesn't predict a fixed future - it describes the energy of your present situation and offers guidance on how to navigate it wisely. Think of it less as prophecy and more as a structured way to reflect on your question from a new angle." }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need to create an account to get a reading?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No, you can consult the oracle as a guest. Creating a free account simply removes the reading limit and saves your history so you can revisit past consultations." }
+        }
+      ]
+    }
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&display=block" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
         *, *::before, *::after { box-sizing: border-box; }
@@ -645,7 +674,44 @@
         }
 
         .seo-container p:last-child {
-            margin-bottom: 0; 
+            margin-bottom: 0;
+        }
+
+        .seo-container h3 {
+            font-size: clamp(1.6rem, 4.5vw, 2rem);
+            color: var(--text-black);
+            margin: 2.5rem 0 1rem 0;
+            font-weight: 600;
+        }
+
+        .seo-container a {
+            color: var(--text-black);
+            text-decoration: underline;
+            text-decoration-color: var(--vibrant-red);
+            text-underline-offset: 3px;
+        }
+
+        .faq-list {
+            text-align: left;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid rgba(26, 26, 26, 0.1);
+            padding: 1.2rem 0;
+        }
+
+        .faq-item summary {
+            font-size: clamp(1.2rem, 3.5vw, 1.4rem);
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--text-black);
+        }
+
+        .faq-item p {
+            margin: 0.8rem 0 0 0;
+            font-size: clamp(1.1rem, 3.2vw, 1.3rem);
         }
 
         /* --- SEO IMAGE & CAPTION --- */
@@ -769,6 +835,34 @@
         <p class="seo-caption">&copy; Tim Lienvilay & Ranvir Singh Bassi, 2026. All Rights Reserved.</p>
         
         <p>Whether you seek guidance on relationships, career crossroads, or inner growth, our AI-trained divination model respectfully interprets the traditional changing lines with poetic depth. Embrace the stillness, ask your question, and let the wisdom of the ancients illuminate your path.</p>
+
+        <h3>What Is the I Ching?</h3>
+        <p>The I Ching, or "Book of Changes," is one of the oldest texts in the world, dating back over 3,000 years to ancient China. It is built from 64 hexagrams &mdash; six-line figures formed by combining two of the eight trigrams, the fundamental building blocks of yin and yang. Each hexagram describes a distinct pattern of change, and together they form a complete map of life's recurring situations: growth, conflict, retreat, and renewal. For centuries the I Ching has shaped Taoist and Confucian thought alike, valued not as fortune-telling but as a mirror for reflection &mdash; a way to see your circumstances more clearly before you act.</p>
+
+        <h3>How This Oracle Works</h3>
+        <p>Traditionally, a reading is cast by tossing three coins six times, once for each line of the hexagram, working from the bottom up. Each toss produces a Yin or Yang line, and occasionally a "changing line" &mdash; a moment of transformation where one energy is actively becoming its opposite. This oracle recreates that exact method: your coin tosses build a genuine hexagram, changing lines included, which is then interpreted for the specific question you asked rather than a generic summary.</p>
+
+        <p><a href="/hexagrams/">Explore all 64 hexagrams</a> to study their traditional meanings, or scroll up to cast your own reading.</p>
+
+        <h3>Frequently Asked Questions</h3>
+        <div class="faq-list">
+            <details class="faq-item">
+                <summary>Is this I Ching oracle free to use?</summary>
+                <p>Yes. Guests can cast a limited number of free readings, and creating a free account unlocks unlimited readings along with a saved history of your past consultations.</p>
+            </details>
+            <details class="faq-item">
+                <summary>What are hexagrams and changing lines?</summary>
+                <p>A hexagram is a stack of six lines, each either Yin (broken) or Yang (solid), formed by casting coins six times. Some lines are "changing" &mdash; meaning they are transforming into their opposite &mdash; which points to a second, resulting hexagram describing where the situation is heading.</p>
+            </details>
+            <details class="faq-item">
+                <summary>How is this different from a fortune teller?</summary>
+                <p>The I Ching doesn't predict a fixed future &mdash; it describes the energy of your present situation and offers guidance on how to navigate it wisely. Think of it less as prophecy and more as a structured way to reflect on your question from a new angle.</p>
+            </details>
+            <details class="faq-item">
+                <summary>Do I need to create an account to get a reading?</summary>
+                <p>No, you can consult the oracle as a guest. Creating a free account simply removes the reading limit and saves your history so you can revisit past consultations.</p>
+            </details>
+        </div>
     </div>
 
     <div id="toast">Link copied to clipboard!</div>
