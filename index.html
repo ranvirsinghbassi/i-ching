@@ -66,7 +66,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
         *, *::before, *::after { box-sizing: border-box; }
@@ -79,6 +79,9 @@
             --blue-red-split: linear-gradient(90deg, var(--vibrant-blue) 50%, var(--vibrant-red) 50%);
             --blue-red-split-reverse: linear-gradient(90deg, var(--vibrant-red) 50%, var(--vibrant-blue) 50%);
             --pen-stroke-black: rgba(26, 26, 26, 0.95);
+            /* Nunito for longer paragraphs - pairs with Caveat but reads far
+               easier at length. Headings/labels/buttons stay in Caveat. */
+            --font-body: 'Nunito', sans-serif;
         }
 
         body {
@@ -438,8 +441,9 @@
         }
 
         .reading-desc {
-            font-size: clamp(1.3rem, 4.5vw, 1.6rem);
-            line-height: 1.6;
+            font-family: var(--font-body);
+            font-size: clamp(1.05rem, 3.6vw, 1.25rem);
+            line-height: 1.7;
             text-align: justify;
             color: #444;
         }
@@ -685,10 +689,11 @@
         }
         
         .seo-container p {
-            font-size: clamp(1.3rem, 4vw, 1.6rem); /* Slightly larger for elegance */
-            line-height: 1.6;
+            font-family: var(--font-body);
+            font-size: clamp(1.05rem, 3vw, 1.2rem);
+            line-height: 1.7;
             color: #666; /* Softer grey so the colored heading pops */
-            margin: 0 0 1.5rem 0; 
+            margin: 0 0 1.5rem 0;
         }
 
         .seo-container p:last-child {
@@ -728,8 +733,10 @@
         }
 
         .faq-item p {
+            font-family: var(--font-body);
             margin: 0.8rem 0 0 0;
-            font-size: clamp(1.1rem, 3.2vw, 1.3rem);
+            font-size: clamp(0.95rem, 2.6vw, 1.05rem);
+            line-height: 1.6;
         }
 
         .hex-showcase {
@@ -807,7 +814,9 @@
             }
             .btn-submit {
                 white-space: nowrap;
-                font-size: clamp(1rem, 4.2vw, 1.4rem);
+                width: 88%;
+                text-align: center;
+                font-size: clamp(1.2rem, 5.8vw, 1.6rem);
                 letter-spacing: 0.05em;
                 padding-left: clamp(1rem, 4vw, 1.5rem);
                 padding-right: clamp(1rem, 4vw, 1.5rem);
@@ -937,8 +946,10 @@
         // Flip to true once that's wired up - it's the only change needed here.
         const PRO_ENABLED = false;
 
-        // Shrinks .title-name (the signed-in user's name in the header) so it
-        // always fits on a single line on mobile, regardless of name length.
+        // Sizes .title-name (the signed-in user's name in the header) to fill
+        // most of the width on a single line on mobile - grows short names up
+        // and shrinks long ones down, rather than only ever shrinking from
+        // whatever size the CSS clamp happened to produce.
         // Desktop lays the name out inline with the prefix and isn't affected.
         function fitTitleName() {
             const el = document.querySelector('.title-name');
@@ -947,16 +958,19 @@
                 el.style.fontSize = ''; // let desktop CSS take back over
                 return;
             }
-            const maxWidth = window.innerWidth * 0.92;
-            const maxFontSize = parseFloat(getComputedStyle(el).fontSize);
-            let fontSize = maxFontSize;
-            el.style.fontSize = fontSize + 'px';
-            let iterations = 0;
-            while (el.scrollWidth > maxWidth && fontSize > 20 && iterations < 40) {
-                fontSize -= 1;
-                el.style.fontSize = fontSize + 'px';
-                iterations++;
+            const maxWidth = window.innerWidth * 0.94;
+            let lo = 20, hi = 160, best = lo;
+            for (let i = 0; i < 20; i++) {
+                const mid = (lo + hi) / 2;
+                el.style.fontSize = mid + 'px';
+                if (el.scrollWidth <= maxWidth) {
+                    best = mid;
+                    lo = mid;
+                } else {
+                    hi = mid;
+                }
             }
+            el.style.fontSize = best + 'px';
         }
         window.addEventListener('resize', () => {
             clearTimeout(window._fitTitleNameTimer);
