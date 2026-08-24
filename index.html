@@ -380,6 +380,31 @@
             -webkit-text-fill-color: var(--text-black);
         }
 
+        /* Appears once the real question box has scrolled off-screen. Clicking
+           it does NOT submit anything - it just scrolls back up to the
+           question box, so the label is deliberately different from the
+           real submit button. Fixed to the bottom so it can never overlap
+           the top-right sign-in/sign-out controls. */
+        .floating-ask-btn {
+            /* visibility (not display) so it always has real dimensions for
+               the mobile auto-fit script to measure, even while hidden -
+               position: fixed already keeps it out of normal page flow. */
+            visibility: hidden;
+            pointer-events: none;
+            position: fixed;
+            bottom: clamp(1rem, 4vw, 2rem);
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 90;
+            white-space: nowrap;
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .floating-ask-btn.visible {
+            visibility: visible;
+            pointer-events: auto;
+        }
+
         .text-btn {
             font-family: 'Playpen Sans', cursive;
             border: none;
@@ -846,6 +871,13 @@
                 padding-left: clamp(1rem, 4vw, 1.5rem);
                 padding-right: clamp(1rem, 4vw, 1.5rem);
             }
+            .floating-ask-btn {
+                width: 88%;
+                text-align: center;
+                letter-spacing: 0.02em;
+                padding-left: clamp(1rem, 4vw, 1.5rem);
+                padding-right: clamp(1rem, 4vw, 1.5rem);
+            }
             .question-label {
                 display: block;
                 width: 100%;
@@ -968,6 +1000,8 @@
         </div>
     </div>
 
+    <button id="floating-ask-btn" class="btn floating-ask-btn" onclick="scrollToQuestionBox()">Ask Your Question</button>
+
     <div id="toast">Link copied to clipboard!</div>
 
     <script>
@@ -1018,6 +1052,7 @@
         function fitAllMobileText() {
             fitTitleName();
             fitTextToOneLine(document.querySelector('.btn-submit'), 12, 40);
+            fitTextToOneLine(document.getElementById('floating-ask-btn'), 12, 40);
             fitTextToOneLine(document.querySelector('.question-label'), 12, 48);
             // Plain signed-out "I CHING" heading - the signed-in name (with
             // the .long-title class) is handled separately by fitTitleName.
@@ -1026,6 +1061,55 @@
                 fitTextToOneLine(headerTitle, 24, 72);
             }
         }
+
+        // --- FLOATING "ASK YOUR QUESTION" BUTTON ---
+        // Shows once the real question box has scrolled off-screen (and only
+        // while it's the active UI - not during cooldowns, coin tosses, or
+        // while a reading is displayed). Clicking it never submits anything;
+        // it just scrolls back up to the question box.
+        function scrollToQuestionBox() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function updateFloatingAskButton() {
+            const floatBtn = document.getElementById('floating-ask-btn');
+            const questionSection = document.getElementById('question-section');
+            if (!floatBtn || !questionSection) return;
+
+            const isActiveState = getComputedStyle(questionSection).display !== 'none';
+            if (!isActiveState) {
+                floatBtn.classList.remove('visible');
+                return;
+            }
+
+            const rect = questionSection.getBoundingClientRect();
+            const isOffScreen = rect.bottom < 0;
+            floatBtn.classList.toggle('visible', isOffScreen);
+        }
+
+        let floatingAskTicking = false;
+        window.addEventListener('scroll', () => {
+            if (!floatingAskTicking) {
+                requestAnimationFrame(() => {
+                    updateFloatingAskButton();
+                    floatingAskTicking = false;
+                });
+                floatingAskTicking = true;
+            }
+        }, { passive: true });
+
+        window.addEventListener('resize', updateFloatingAskButton);
+
+        // Other code paths toggle #question-section's display directly
+        // (coin toss, cooldown, showing a reading, etc.) - watch for that
+        // instead of duplicating a check at every one of those call sites.
+        const questionSectionEl = document.getElementById('question-section');
+        if (questionSectionEl && window.MutationObserver) {
+            new MutationObserver(updateFloatingAskButton)
+                .observe(questionSectionEl, { attributes: true, attributeFilter: ['style'] });
+        }
+
+        updateFloatingAskButton();
 
         window.addEventListener('resize', () => {
             clearTimeout(window._fitTextTimer);
