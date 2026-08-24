@@ -81,7 +81,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@200;400;600;700&display=swap" rel="stylesheet">
 
     <style>
         *, *::before, *::after { box-sizing: border-box; }
@@ -97,8 +97,9 @@
         }
 
         body {
-            font-family: 'Caveat', cursive;
-            background-color: #FAFAFA; 
+            font-family: 'Playpen Sans', cursive;
+            font-weight: 200;
+            background-color: #FAFAFA;
             margin: 0;
             padding: 0;
             display: flex;
@@ -192,7 +193,7 @@
 
         .question-input {
             width: 100%;
-            font-family: 'Caveat', cursive;
+            font-family: 'Playpen Sans', cursive;
             font-size: clamp(1.4rem, 4vw, 1.8rem);
             color: var(--text-black);
             padding: 1rem 1.5rem;
@@ -335,7 +336,7 @@
         }
 
         .btn {
-            font-family: 'Caveat', cursive;
+            font-family: 'Playpen Sans', cursive;
             border-color: transparent;
             background: linear-gradient(var(--bg-white), var(--bg-white)) padding-box,
                         var(--blue-red-split) border-box;
@@ -380,7 +381,7 @@
         }
 
         .text-btn {
-            font-family: 'Caveat', cursive;
+            font-family: 'Playpen Sans', cursive;
             border: none;
             font-size: clamp(1.2rem, 3.5vw, 1.5rem);
             font-weight: 700;
@@ -479,7 +480,7 @@
             left: 50%;
             bottom: 30px;
             transform: translateX(-50%);
-            font-family: 'Caveat', cursive;
+            font-family: 'Playpen Sans', cursive;
             font-size: 1.5rem;
             opacity: 0;
             transition: opacity 0.3s, visibility 0.3s;
@@ -527,7 +528,7 @@
         }
 
         .auth-link {
-            font-family: 'Caveat', cursive;
+            font-family: 'Playpen Sans', cursive;
             color: #666; 
             text-decoration: none;
             font-size: clamp(1.2rem, 3vw, 1.4rem); 
@@ -551,7 +552,7 @@
         }
 
         .auth-link {
-            font-family: 'Caveat', cursive;
+            font-family: 'Playpen Sans', cursive;
             color: #666; 
             text-decoration: none;
             font-size: clamp(1.1rem, 3vw, 1.3rem); /* Slightly smaller than subtitle */
@@ -621,7 +622,7 @@
         }
 
         .history-card-title {
-            font-family: 'Caveat', cursive;
+            font-family: 'Playpen Sans', cursive;
             font-weight: 700;
             font-size: clamp(1.4rem, 4vw, 1.6rem);
             background: var(--blue-red-split);
@@ -642,7 +643,7 @@
         }
 
         .history-card-question {
-            font-family: 'Caveat', cursive;
+            font-family: 'Playpen Sans', cursive;
             font-size: clamp(1.1rem, 3vw, 1.3rem);
             color: #666;
             font-style: italic;
@@ -1883,7 +1884,7 @@
               signIn: { start: { subtitle: "By continuing, you agree to our Terms and consent to receive our monthly I Ching newsletter." } }
             },
             appearance: {
-              variables: { fontFamily: "'Caveat', cursive", colorPrimary: "#e1daf3", colorText: "#1A1A1A", colorBackground: "#FAFAFA", colorInputBackground: "#FFFFFF", colorInputText: "#1A1A1A", borderRadius: "12px" },
+              variables: { fontFamily: "'Playpen Sans', cursive", colorPrimary: "#e1daf3", colorText: "#1A1A1A", colorBackground: "#FAFAFA", colorInputBackground: "#FFFFFF", colorInputText: "#1A1A1A", borderRadius: "12px" },
               elements: { card: { boxShadow: "0 4px 30px rgba(0, 0, 0, 0.08)" }, headerTitle: { fontSize: "2.5rem" }, headerSubtitle: { fontSize: "1.1rem" } }
             }
           });
@@ -1964,7 +1965,7 @@
     </script>
     
 
-    <div id="guest-limit-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(250, 250, 250, 0.85); backdrop-filter: blur(12px); z-index: 1000; justify-content: center; align-items: center; font-family: 'Caveat', cursive;">
+    <div id="guest-limit-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(250, 250, 250, 0.85); backdrop-filter: blur(12px); z-index: 1000; justify-content: center; align-items: center; font-family: 'Playpen Sans', cursive;">
     <div style="background: white; padding: 3rem; border-radius: 20px; text-align: center; max-width: 450px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.05);">
         <h2 style="font-size: 2.5rem; margin-bottom: 0.5rem; margin-top: 0; background: linear-gradient(90deg, #cde8f1 50%, #e1daf3 50%); -webkit-background-clip: text; color: transparent;">The Oracle is Resting</h2>
         <p style="font-size: 1.4rem; color: #666; margin-bottom: 2rem;">You are out of free guest readings for the next 1 hour.<br><br>Sign up now for unlimited free readings!</p>
@@ -1974,7 +1975,7 @@
     </div>
     </div>
 
-    <div id="free-limit-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(250, 250, 250, 0.85); backdrop-filter: blur(12px); z-index: 1000; justify-content: center; align-items: center; font-family: 'Caveat', cursive;">
+    <div id="free-limit-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(250, 250, 250, 0.85); backdrop-filter: blur(12px); z-index: 1000; justify-content: center; align-items: center; font-family: 'Playpen Sans', cursive;">
         <div style="background: white; padding: 3rem; border-radius: 20px; text-align: center; max-width: 450px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.05);">
             <h2 style="font-size: 2.5rem; margin-bottom: 0.5rem; margin-top: 0; background: linear-gradient(90deg, #cde8f1 50%, #e1daf3 50%); -webkit-background-clip: text; color: transparent;">Seek Deeper Wisdom</h2>
             <p style="font-size: 1.4rem; color: #666; margin-bottom: 2rem;">You are out of free readings for the next 30 minutes.<br><br>Wait for the stars to align, or Upgrade to Pro for unlimited access.</p>
