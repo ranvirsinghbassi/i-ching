@@ -1072,17 +1072,25 @@
         // white question tile below it keeps breaking whenever any of that
         // changes. Measure the header's real rendered height instead and
         // set the tile's clearance to always match it, on every screen size.
+        //
+        // Important: this must be computed ENTIRELY from the header's own
+        // geometry (it's position: fixed, so top/height are scroll-
+        // independent), never by comparing against oracleContainer's own
+        // getBoundingClientRect() - that's a normal-flow element and moves
+        // with scroll, so mixing the two only gave a correct answer when
+        // the page happened to be scrolled to the very top. Mobile browsers
+        // fire resize events when the address bar hides/shows mid-scroll,
+        // so that mistake recalculated a scroll-skewed margin on every one
+        // of those and fought the user's own scrolling.
         function positionOracleContainer() {
             const oracleContainer = document.querySelector('.oracle-container');
             const header = document.querySelector('header');
             if (!oracleContainer || !header) return;
 
-            oracleContainer.style.marginTop = '0px';
-            const headerBottom = header.getBoundingClientRect().bottom;
-            const containerTop = oracleContainer.getBoundingClientRect().top;
+            const headerHeight = header.getBoundingClientRect().height;
+            const headerTop = parseFloat(getComputedStyle(header).top) || 0;
             const buffer = 32;
-            const gap = headerBottom - containerTop + buffer;
-            oracleContainer.style.marginTop = Math.max(0, gap) + 'px';
+            oracleContainer.style.marginTop = Math.max(0, headerTop + headerHeight + buffer) + 'px';
         }
 
         // --- FLOATING "ASK YOUR QUESTION" BUTTON ---
