@@ -66,7 +66,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Shantell+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
         *, *::before, *::after { box-sizing: border-box; }
@@ -79,21 +79,21 @@
             --blue-red-split: linear-gradient(90deg, var(--vibrant-blue) 50%, var(--vibrant-red) 50%);
             --blue-red-split-reverse: linear-gradient(90deg, var(--vibrant-red) 50%, var(--vibrant-blue) 50%);
             --pen-stroke-black: rgba(26, 26, 26, 0.95);
-            /* Patrick Hand everywhere for now (previewing it site-wide) -
-               natural handwriting like Caveat, but unconnected letterforms
-               read far easier at length. */
-            --font-body: 'Patrick Hand', cursive;
+            /* Shantell Sans everywhere for now (previewing it site-wide) -
+               a more polished, UI-oriented "organic" font vs. raw
+               handwriting fonts like Caveat/Patrick Hand. */
+            --font-body: 'Shantell Sans', cursive;
         }
 
-        /* Patrick Hand has a smaller apparent size than Caveat at the same
-           declared font-size (smaller x-height), so scale the whole site's
-           rem-based sizing up to compensate. */
+        /* Shantell Sans is closer to normal UI sizing than the handwriting
+           fonts were, so this needs a smaller boost than Patrick Hand did -
+           starting conservative, easy to tune further from here. */
         html {
-            font-size: 115%;
+            font-size: 104%;
         }
 
         body {
-            font-family: 'Patrick Hand', cursive;
+            font-family: 'Shantell Sans', cursive;
             background-color: #FAFAFA; 
             margin: 0;
             padding: 0;
@@ -188,7 +188,7 @@
 
         .question-input {
             width: 100%;
-            font-family: 'Patrick Hand', cursive;
+            font-family: 'Shantell Sans', cursive;
             font-size: clamp(1.4rem, 4vw, 1.8rem);
             color: var(--text-black);
             padding: 1rem 1.5rem;
@@ -331,7 +331,7 @@
         }
 
         .btn {
-            font-family: 'Patrick Hand', cursive;
+            font-family: 'Shantell Sans', cursive;
             border-color: transparent;
             background: linear-gradient(var(--bg-white), var(--bg-white)) padding-box,
                         var(--blue-red-split) border-box;
@@ -376,7 +376,7 @@
         }
 
         .text-btn {
-            font-family: 'Patrick Hand', cursive;
+            font-family: 'Shantell Sans', cursive;
             border: none;
             font-size: clamp(1.2rem, 3.5vw, 1.5rem);
             font-weight: 700;
@@ -441,13 +441,20 @@
 
         .reading-poem {
             font-family: var(--font-body);
-            font-size: clamp(1.3rem, 4.3vw, 2.1rem);
+            font-size: clamp(1.2rem, 3.6vw, 1.7rem);
             line-height: 1.6;
             margin: 2rem 0;
             text-align: center;
             font-weight: 600;
-            text-wrap: balance;
             color: var(--text-black);
+        }
+
+        .poem-line {
+            text-wrap: balance;
+        }
+
+        .poem-line + .poem-line {
+            margin-top: 0.3em;
         }
 
         .reading-desc {
@@ -471,7 +478,7 @@
             left: 50%;
             bottom: 30px;
             transform: translateX(-50%);
-            font-family: 'Patrick Hand', cursive;
+            font-family: 'Shantell Sans', cursive;
             font-size: 1.5rem;
             opacity: 0;
             transition: opacity 0.3s, visibility 0.3s;
@@ -519,7 +526,7 @@
         }
 
         .auth-link {
-            font-family: 'Patrick Hand', cursive;
+            font-family: 'Shantell Sans', cursive;
             color: #666; 
             text-decoration: none;
             font-size: clamp(1.2rem, 3vw, 1.4rem); 
@@ -543,7 +550,7 @@
         }
 
         .auth-link {
-            font-family: 'Patrick Hand', cursive;
+            font-family: 'Shantell Sans', cursive;
             color: #666; 
             text-decoration: none;
             font-size: clamp(1.1rem, 3vw, 1.3rem); /* Slightly smaller than subtitle */
@@ -613,7 +620,7 @@
         }
 
         .history-card-title {
-            font-family: 'Patrick Hand', cursive;
+            font-family: 'Shantell Sans', cursive;
             font-weight: 700;
             font-size: clamp(1.4rem, 4vw, 1.6rem);
             background: var(--blue-red-split);
@@ -634,7 +641,7 @@
         }
 
         .history-card-question {
-            font-family: 'Patrick Hand', cursive;
+            font-family: 'Shantell Sans', cursive;
             font-size: clamp(1.1rem, 3vw, 1.3rem);
             color: #666;
             font-style: italic;
@@ -1647,28 +1654,45 @@
         function formatTextForTTS(text, containerElement, isPoem, currentOffset) {
             containerElement.innerHTML = '';
             const tokens = text.match(/\S+|\s+/g) || [];
-            
+
+            // Poem lines each get their own block (instead of a flat <br>
+            // between them) so text-wrap: balance can balance each line on
+            // its own if it's too long to fit in one row, rather than
+            // stranding a lone trailing word by itself.
+            let target = containerElement;
+            if (isPoem) {
+                target = document.createElement('div');
+                target.className = 'poem-line';
+                containerElement.appendChild(target);
+            }
+
             tokens.forEach(token => {
-                if (/\S/.test(token)) { 
+                if (/\S/.test(token)) {
                     const span = document.createElement('span');
                     span.className = 'tts-word';
                     span.innerText = token;
-                    containerElement.appendChild(span);
+                    target.appendChild(span);
                     ttsWordSpans.push({ element: span, start: currentOffset, end: currentOffset + token.length });
-                } else { 
+                } else {
                     // We removed "isPoem &&" here so the description can use \n\n for paragraphs!
                     if (token.includes('\n')) {
                         const newlines = (token.match(/\n/g) || []).length;
                         for(let i = 0; i < newlines; i++) {
-                            containerElement.appendChild(document.createElement('br'));
+                            if (isPoem) {
+                                target = document.createElement('div');
+                                target.className = 'poem-line';
+                                containerElement.appendChild(target);
+                            } else {
+                                containerElement.appendChild(document.createElement('br'));
+                            }
                         }
                     } else {
-                        containerElement.appendChild(document.createTextNode(token));
+                        target.appendChild(document.createTextNode(token));
                     }
                 }
                 currentOffset += token.length;
             });
-            
+
             return currentOffset;
         }
 
@@ -1828,7 +1852,7 @@
               signIn: { start: { subtitle: "By continuing, you agree to our Terms and consent to receive our monthly I Ching newsletter." } }
             },
             appearance: {
-              variables: { fontFamily: "'Patrick Hand', cursive", colorPrimary: "#e1daf3", colorText: "#1A1A1A", colorBackground: "#FAFAFA", colorInputBackground: "#FFFFFF", colorInputText: "#1A1A1A", borderRadius: "12px" },
+              variables: { fontFamily: "'Shantell Sans', cursive", colorPrimary: "#e1daf3", colorText: "#1A1A1A", colorBackground: "#FAFAFA", colorInputBackground: "#FFFFFF", colorInputText: "#1A1A1A", borderRadius: "12px" },
               elements: { card: { boxShadow: "0 4px 30px rgba(0, 0, 0, 0.08)" }, headerTitle: { fontSize: "2.5rem" }, headerSubtitle: { fontSize: "1.1rem" } }
             }
           });
@@ -1909,7 +1933,7 @@
     </script>
     
 
-    <div id="guest-limit-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(250, 250, 250, 0.85); backdrop-filter: blur(12px); z-index: 1000; justify-content: center; align-items: center; font-family: 'Patrick Hand', cursive;">
+    <div id="guest-limit-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(250, 250, 250, 0.85); backdrop-filter: blur(12px); z-index: 1000; justify-content: center; align-items: center; font-family: 'Shantell Sans', cursive;">
     <div style="background: white; padding: 3rem; border-radius: 20px; text-align: center; max-width: 450px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.05);">
         <h2 style="font-size: 2.5rem; margin-bottom: 0.5rem; margin-top: 0; background: linear-gradient(90deg, #cde8f1 50%, #e1daf3 50%); -webkit-background-clip: text; color: transparent;">The Oracle is Resting</h2>
         <p style="font-size: 1.4rem; color: #666; margin-bottom: 2rem;">You are out of free guest readings for the next 1 hour.<br><br>Sign up now for unlimited free readings!</p>
@@ -1919,7 +1943,7 @@
     </div>
     </div>
 
-    <div id="free-limit-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(250, 250, 250, 0.85); backdrop-filter: blur(12px); z-index: 1000; justify-content: center; align-items: center; font-family: 'Patrick Hand', cursive;">
+    <div id="free-limit-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(250, 250, 250, 0.85); backdrop-filter: blur(12px); z-index: 1000; justify-content: center; align-items: center; font-family: 'Shantell Sans', cursive;">
         <div style="background: white; padding: 3rem; border-radius: 20px; text-align: center; max-width: 450px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.05);">
             <h2 style="font-size: 2.5rem; margin-bottom: 0.5rem; margin-top: 0; background: linear-gradient(90deg, #cde8f1 50%, #e1daf3 50%); -webkit-background-clip: text; color: transparent;">Seek Deeper Wisdom</h2>
             <p style="font-size: 1.4rem; color: #666; margin-bottom: 2rem;">You are out of free readings for the next 30 minutes.<br><br>Wait for the stars to align, or Upgrade to Pro for unlimited access.</p>
