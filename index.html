@@ -81,7 +81,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@100;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@100;600&family=Mansalva&display=swap" rel="stylesheet">
 
     <style>
         *, *::before, *::after { box-sizing: border-box; }
@@ -133,12 +133,13 @@
         }
 
         h1 {
+            font-family: 'Mansalva', cursive;
             font-size: clamp(3rem, 8vw, 4.5rem);
             letter-spacing: 0.05em;
             margin-bottom: 0.2rem; /* Fixed spacing between Title and Subtitle */
             font-weight: 600;
-            white-space: nowrap; 
-            transition: font-size 0.3s ease; 
+            white-space: nowrap;
+            transition: font-size 0.3s ease;
         }
 
         h1.long-title {
@@ -1062,6 +1063,26 @@
             if (headerTitle && !headerTitle.classList.contains('long-title')) {
                 fitTextToOneLine(headerTitle, 24, 72);
             }
+            positionOracleContainer();
+        }
+
+        // The header (title + subtitle) is position: fixed with a height
+        // that varies a lot - one line vs two, signed in vs out, whatever
+        // font/size is active - so a single guessed margin-top for the
+        // white question tile below it keeps breaking whenever any of that
+        // changes. Measure the header's real rendered height instead and
+        // set the tile's clearance to always match it, on every screen size.
+        function positionOracleContainer() {
+            const oracleContainer = document.querySelector('.oracle-container');
+            const header = document.querySelector('header');
+            if (!oracleContainer || !header) return;
+
+            oracleContainer.style.marginTop = '0px';
+            const headerBottom = header.getBoundingClientRect().bottom;
+            const containerTop = oracleContainer.getBoundingClientRect().top;
+            const buffer = 32;
+            const gap = headerBottom - containerTop + buffer;
+            oracleContainer.style.marginTop = Math.max(0, gap) + 'px';
         }
 
         // --- FLOATING "ASK YOUR QUESTION" BUTTON ---
@@ -2030,7 +2051,7 @@
                   // NEW: Wrap the text in spans (with a space between them for desktop!)
                   headerTitle.innerHTML = `<span class="title-prefix">THE CHANGES OF</span> <span class="title-name">${firstName.toUpperCase()}</span>`;
                   headerTitle.classList.add('long-title');
-                  fitTitleName();
+                  fitAllMobileText();
 
                   headerSubtitle.innerText = "Your Story Unfolds";
                   headerSubtitle.classList.add('hide-on-mobile'); // Hides this on mobile only!
