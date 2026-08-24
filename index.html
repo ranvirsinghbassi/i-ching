@@ -66,7 +66,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
 
     <style>
         *, *::before, *::after { box-sizing: border-box; }
@@ -79,9 +79,10 @@
             --blue-red-split: linear-gradient(90deg, var(--vibrant-blue) 50%, var(--vibrant-red) 50%);
             --blue-red-split-reverse: linear-gradient(90deg, var(--vibrant-red) 50%, var(--vibrant-blue) 50%);
             --pen-stroke-black: rgba(26, 26, 26, 0.95);
-            /* Nunito for longer paragraphs - pairs with Caveat but reads far
-               easier at length. Headings/labels/buttons stay in Caveat. */
-            --font-body: 'Nunito', sans-serif;
+            /* Patrick Hand for longer paragraphs - natural handwriting like
+               Caveat, but unconnected letterforms read far easier at length.
+               Headings/labels/buttons stay in Caveat. */
+            --font-body: 'Patrick Hand', cursive;
         }
 
         body {
@@ -405,7 +406,8 @@
         }
         
         .reading-question-display {
-            font-size: clamp(1.2rem, 3.5vw, 1.5rem);
+            font-family: var(--font-body);
+            font-size: clamp(1rem, 2.8vw, 1.2rem);
             font-style: italic;
             margin-bottom: 2rem;
             color: #666;
@@ -431,13 +433,14 @@
         .tts-word { transition: opacity 0.15s ease-in-out; }
 
         .reading-poem {
-            font-size: clamp(1.2rem, 4vw, 2rem); 
-            line-height: 1.5;
+            font-family: var(--font-body);
+            font-size: clamp(1.05rem, 3.2vw, 1.5rem);
+            line-height: 1.6;
             margin: 2rem 0;
             text-align: center;
             font-weight: 600;
             text-wrap: balance;
-            color: var(--text-black); 
+            color: var(--text-black);
         }
 
         .reading-desc {
