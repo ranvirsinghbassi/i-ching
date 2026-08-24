@@ -176,6 +176,13 @@ function hubPage() {
 <p style="text-align:center;color:#666;margin-bottom:2.5rem;">The complete set of I Ching hexagrams, each a distinct pattern of change. Select one to read its traditional meaning, or return to the oracle to cast your own.</p>
 <div class="hex-grid">${items}
 </div>
+
+<h2>64 Hexagrams, 4,096 Possible Readings</h2>
+<p>Every reading starts from one of these 64 hexagrams, but no two readings are really the same. Each of the six lines in a cast can land as a stable Yin, a stable Yang, or a "changing" line actively transforming into its opposite - four possible states per line. Across six lines, that's 4<sup>6</sup> = 4,096 distinct combinations: the same 64 starting hexagrams, each carrying one of 64 different patterns of changing lines.</p>
+
+<h2>Where This Site Goes Further</h2>
+<p>Most references stop at the traditional text for whichever combination you land on. The Book of Changes goes a step further: it reads your specific changing lines alongside the actual question you asked, and interprets the two together - not a static definition pulled off a shelf, but a reading built around your exact situation.</p>
+
 <div class="cta">
   <p>Want a reading built around your own question?</p>
   <a class="btn" href="/">Ask the Oracle a Question</a>

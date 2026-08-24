@@ -42,6 +42,21 @@
       "mainEntity": [
         {
           "@type": "Question",
+          "name": "What is The Book of Changes?",
+          "acceptedAnswer": { "@type": "Answer", "text": "The Book of Changes is a free online I Ching oracle. Cast a reading, ask a real question, and receive a unique interpretation that blends the traditional wisdom of the hexagrams with guidance tailored to exactly what you asked." }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the I Ching?",
+          "acceptedAnswer": { "@type": "Answer", "text": "The I Ching, or Book of Changes, is one of the oldest texts in the world, dating back over 3,000 years to ancient China. It's built from 64 hexagrams - six-line figures that each describe a distinct pattern of change - prized for centuries as a mirror for reflection rather than simple fortune-telling." }
+        },
+        {
+          "@type": "Question",
+          "name": "How does this online oracle work?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Traditionally, a reading is cast by tossing three coins six times, once per line, from the bottom up. Each toss produces a Yin or Yang line, and sometimes a changing line - a moment of transformation. This oracle recreates that exact method, then interprets the resulting hexagram for the specific question you asked." }
+        },
+        {
+          "@type": "Question",
           "name": "Is this I Ching oracle free to use?",
           "acceptedAnswer": { "@type": "Answer", "text": "Yes. Guests can cast a limited number of free readings, and creating a free account unlocks unlimited readings along with a saved history of your past consultations." }
         },
@@ -759,9 +774,16 @@
 
         .hex-showcase {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
             gap: 0.8rem;
             margin: 1.5rem 0;
+        }
+
+        /* Force exactly 5 per row on desktop (10 cards = 2 rows) */
+        @media (min-width: 651px) {
+            .hex-showcase {
+                grid-template-columns: repeat(5, 1fr);
+            }
         }
 
         .hex-showcase-card {
@@ -904,41 +926,41 @@
     </div>
 
     <div id="seo-section" class="seo-container">
-        <h2>Ancient Wisdom for the Modern Seeker</h2>
-        
-        <p>Welcome to The Book of Changes, a digital sanctuary where ancient clarity meets modern intuition. For over three millennia, the I Ching oracle has guided seekers through life's shifting currents.</p>
-        
-        <p>Here, you can cast the coins online and consult the hexagrams to unlock profound, personalized insights.</p>
-        
         <img src="Path - Tim Lienvilay and Ranvir Singh Bassi.webp" alt="Path by Tim Lienvilay & Ranvir Singh Bassi" class="seo-image" loading="lazy">
         <p class="seo-caption">&copy; Tim Lienvilay & Ranvir Singh Bassi, 2026. All Rights Reserved.</p>
-        
-        <p>Whether you seek guidance on relationships, career crossroads, or inner growth, our AI-trained divination model respectfully interprets the traditional changing lines with poetic depth. Embrace the stillness, ask your question, and let the wisdom of the ancients illuminate your path.</p>
 
-        <h3>What Is the I Ching?</h3>
-        <p>The I Ching, or "Book of Changes," is one of the oldest texts in the world, dating back over 3,000 years to ancient China. It is built from 64 hexagrams &mdash; six-line figures formed by combining two of the eight trigrams, the fundamental building blocks of yin and yang. Each hexagram describes a distinct pattern of change, and together they form a complete map of life's recurring situations: growth, conflict, retreat, and renewal. For centuries the I Ching has shaped Taoist and Confucian thought alike, valued not as fortune-telling but as a mirror for reflection &mdash; a way to see your circumstances more clearly before you act.</p>
-
-        <h3>How This Oracle Works</h3>
-        <p>Traditionally, a reading is cast by tossing three coins six times, once for each line of the hexagram, working from the bottom up. Each toss produces a Yin or Yang line, and occasionally a "changing line" &mdash; a moment of transformation where one energy is actively becoming its opposite. This oracle recreates that exact method: your coin tosses build a genuine hexagram, changing lines included, which is then interpreted for the specific question you asked rather than a generic summary.</p>
-
-        <h3>Explore the 64 Hexagrams</h3>
+        <h2>Explore the 64 Hexagrams</h2>
         <p>Each hexagram describes a distinct pattern of change. Browse a few below, or see the full set.</p>
 
         <div class="hex-showcase">
             <a href="/hexagrams/1-the-creative/" class="hex-showcase-card"><span class="hex-showcase-symbol">&#x4DC0;</span><span>1. The Creative</span></a>
             <a href="/hexagrams/2-the-receptive/" class="hex-showcase-card"><span class="hex-showcase-symbol">&#x4DC1;</span><span>2. The Receptive</span></a>
             <a href="/hexagrams/11-peace/" class="hex-showcase-card"><span class="hex-showcase-symbol">&#x4DCA;</span><span>11. Peace</span></a>
+            <a href="/hexagrams/19-approach/" class="hex-showcase-card"><span class="hex-showcase-symbol">&#x4DD2;</span><span>19. Approach</span></a>
             <a href="/hexagrams/24-return/" class="hex-showcase-card"><span class="hex-showcase-symbol">&#x4DD7;</span><span>24. Return</span></a>
             <a href="/hexagrams/29-the-abysmal/" class="hex-showcase-card"><span class="hex-showcase-symbol">&#x4DDC;</span><span>29. The Abysmal</span></a>
             <a href="/hexagrams/30-the-clinging/" class="hex-showcase-card"><span class="hex-showcase-symbol">&#x4DDD;</span><span>30. The Clinging</span></a>
             <a href="/hexagrams/51-the-arousing/" class="hex-showcase-card"><span class="hex-showcase-symbol">&#x4DF2;</span><span>51. The Arousing</span></a>
             <a href="/hexagrams/63-after-completion/" class="hex-showcase-card"><span class="hex-showcase-symbol">&#x4DFE;</span><span>63. After Completion</span></a>
+            <a href="/hexagrams/64-before-completion/" class="hex-showcase-card"><span class="hex-showcase-symbol">&#x4DFF;</span><span>64. Before Completion</span></a>
         </div>
 
         <p><a href="/hexagrams/">View all 64 hexagrams &rarr;</a></p>
 
-        <h3>Frequently Asked Questions</h3>
+        <h2>Frequently Asked Questions</h2>
         <div class="faq-list">
+            <details class="faq-item">
+                <summary>What is The Book of Changes?</summary>
+                <p>The Book of Changes is a free online I Ching oracle. Cast a reading, ask a real question, and receive a unique interpretation that blends the traditional wisdom of the hexagrams with guidance tailored to exactly what you asked.</p>
+            </details>
+            <details class="faq-item">
+                <summary>What is the I Ching?</summary>
+                <p>The I Ching, or "Book of Changes," is one of the oldest texts in the world, dating back over 3,000 years to ancient China. It's built from 64 hexagrams &mdash; six-line figures that each describe a distinct pattern of change &mdash; prized for centuries as a mirror for reflection rather than simple fortune-telling.</p>
+            </details>
+            <details class="faq-item">
+                <summary>How does this online oracle work?</summary>
+                <p>Traditionally, a reading is cast by tossing three coins six times, once per line, from the bottom up. Each toss produces a Yin or Yang line, and sometimes a "changing line" &mdash; a moment of transformation. This oracle recreates that exact method, then interprets the resulting hexagram for the specific question you asked.</p>
+            </details>
             <details class="faq-item">
                 <summary>Is this I Ching oracle free to use?</summary>
                 <p>Yes. Guests can cast a limited number of free readings, and creating a free account unlocks unlimited readings along with a saved history of your past consultations.</p>
