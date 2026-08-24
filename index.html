@@ -845,8 +845,12 @@
         /* --- MOBILE LAYOUT OVERRIDES --- */
         @media (max-width: 650px) {
             header {
-                /* Pulls the signed-out "I CHING" title up so it isn't too low */
-                top: 3.5rem; 
+                /* Nudged up a bit for a more compact layout - kept a
+                   deliberate gap from the top-right sign-in pill rather than
+                   closing it entirely, since horizontal-only separation from
+                   a short centered title isn't something to bet on without
+                   testing on a real device. */
+                top: 2.6rem;
             }
             h1.long-title {
                 white-space: normal; 
@@ -870,8 +874,11 @@
                 display: none !important; 
             }
             .oracle-container {
-                /* Ensures the white tile clears both the tall and short title states */
-                margin-top: 14rem;
+                /* Fallback for the instant before JS measures the real
+                   header height and sets the precise value inline. */
+                margin-top: 9rem;
+                padding-top: clamp(1.5rem, 5vw, 2.5rem);
+                padding-bottom: clamp(1.5rem, 5vw, 2.5rem);
             }
             .btn-submit {
                 white-space: nowrap;
@@ -1049,7 +1056,7 @@
         }
 
         function fitTitleName() {
-            fitTextToOneLine(document.querySelector('.title-name'), 20, 160);
+            fitTextToOneLine(document.querySelector('.title-name'), 20, 64);
         }
 
         function fitAllMobileText() {
@@ -1061,7 +1068,7 @@
             // the .long-title class) is handled separately by fitTitleName.
             const headerTitle = document.querySelector('header h1');
             if (headerTitle && !headerTitle.classList.contains('long-title')) {
-                fitTextToOneLine(headerTitle, 24, 72);
+                fitTextToOneLine(headerTitle, 24, 44);
             }
             positionOracleContainer();
         }
@@ -1089,7 +1096,7 @@
 
             const headerHeight = header.getBoundingClientRect().height;
             const headerTop = parseFloat(getComputedStyle(header).top) || 0;
-            const buffer = 32;
+            const buffer = 18;
             oracleContainer.style.marginTop = Math.max(0, headerTop + headerHeight + buffer) + 'px';
         }
 
