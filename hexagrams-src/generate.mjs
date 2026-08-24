@@ -39,7 +39,7 @@ const PAGE_HEAD = ({ title, description, canonical }) => `<!doctype html>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%23FAFAFA' stroke='%231A1A1A' stroke-width='1.5'/%3E%3Crect x='8' y='10' width='16' height='3' fill='%231A1A1A'/%3E%3Crect x='8' y='15' width='6' height='3' fill='%231A1A1A'/%3E%3Crect x='18' y='15' width='6' height='3' fill='%231A1A1A'/%3E%3Crect x='8' y='20' width='16' height='3' fill='%231A1A1A'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@100&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@100;600&display=swap" rel="stylesheet">
 <style>
   *,*::before,*::after{box-sizing:border-box}
   :root{--text-black:#1A1A1A;--vibrant-blue:#cde8f1;--vibrant-red:#e1daf3;--split:linear-gradient(90deg,var(--vibrant-blue) 50%,var(--vibrant-red) 50%)}
@@ -49,7 +49,7 @@ const PAGE_HEAD = ({ title, description, canonical }) => `<!doctype html>
   .top-nav{padding:1.5rem 0;font-size:1.3rem}
   .top-nav a{text-decoration:none;border-bottom:1px solid rgba(26,26,26,0.25)}
   .symbol{font-size:5rem;text-align:center;line-height:1;margin:1rem 0}
-  h1{font-size:clamp(2.2rem,7vw,3.2rem);text-align:center;margin:0 0 0.2rem 0;background:var(--split);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;color:transparent;font-weight:100}
+  h1{font-size:clamp(2.2rem,7vw,3.2rem);text-align:center;margin:0 0 0.2rem 0;background:var(--split);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;color:transparent;font-weight:600}
   .pinyin{text-align:center;font-size:1.4rem;color:#777;margin-bottom:2.5rem}
   h2{font-size:1.7rem;margin:2.2rem 0 0.6rem 0}
   p{font-size:1.35rem;line-height:1.6;color:#444;margin:0 0 1rem 0}

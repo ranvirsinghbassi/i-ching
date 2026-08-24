@@ -81,7 +81,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@100&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@100;600&display=swap" rel="stylesheet">
 
     <style>
         *, *::before, *::after { box-sizing: border-box; }
@@ -133,10 +133,10 @@
         }
 
         h1 {
-            font-size: clamp(3rem, 8vw, 4.5rem); 
+            font-size: clamp(3rem, 8vw, 4.5rem);
             letter-spacing: 0.05em;
             margin-bottom: 0.2rem; /* Fixed spacing between Title and Subtitle */
-            font-weight: 100;
+            font-weight: 600;
             white-space: nowrap; 
             transition: font-size 0.3s ease; 
         }
@@ -221,7 +221,7 @@
             display: none;
             font-size: 1.8rem;
             margin: 2rem 0;
-            font-weight: 100;
+            font-weight: 600;
         }
         
         .dots::after {
@@ -384,7 +384,7 @@
             font-family: 'Playpen Sans', cursive;
             border: none;
             font-size: clamp(1.2rem, 3.5vw, 1.5rem);
-            font-weight: 100;
+            font-weight: 600;
             letter-spacing: 0.15em;
             text-transform: uppercase;
             cursor: pointer;
@@ -412,7 +412,7 @@
 
         .reading-title {
             font-size: clamp(2rem, 6vw, 2.8rem);
-            font-weight: 100;
+            font-weight: 600;
             margin-bottom: 0.5rem;
             line-height: 1.2;
         }
@@ -442,6 +442,7 @@
         .tts-icon { width: 22px; height: 22px; stroke-width: 2; }
         
         .tts-word { transition: opacity 0.15s ease-in-out; }
+        .tts-word.active { font-weight: 600; }
 
         .reading-poem {
             font-size: clamp(1.2rem, 4vw, 2rem);
@@ -549,6 +550,7 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
             color: transparent;
+            font-weight: 600;
         }
 
         .auth-link {
@@ -574,6 +576,7 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
             color: transparent;
+            font-weight: 600;
         }
 
         /* --- HISTORY LIST --- */
@@ -623,7 +626,7 @@
 
         .history-card-title {
             font-family: 'Playpen Sans', cursive;
-            font-weight: 100;
+            font-weight: 600;
             font-size: clamp(1.4rem, 4vw, 1.6rem);
             background: var(--blue-red-split);
             -webkit-background-clip: text;
@@ -702,8 +705,8 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
             color: transparent;
-            
-            font-weight: 100;
+
+            font-weight: 600;
             letter-spacing: 0.05em;
         }
         
@@ -879,7 +882,7 @@
     
         <div id="active-area">
             <div id="cooldown-section" style="display: none; flex-direction: column; align-items: center; text-align: center; margin-bottom: 2rem; padding-bottom: 2rem; animation: slideUpFade 0.6s forwards;">
-                <div id="cooldown-timer" style="font-size: clamp(3rem, 8vw, 4.5rem); font-weight: 100; background: var(--blue-red-split); -webkit-background-clip: text; color: transparent; margin-bottom: 0.5rem; padding-right: 0.2em; overflow: visible;">00:00</div>
+                <div id="cooldown-timer" style="font-size: clamp(3rem, 8vw, 4.5rem); font-weight: 600; background: var(--blue-red-split); -webkit-background-clip: text; color: transparent; margin-bottom: 0.5rem; padding-right: 0.2em; overflow: visible;">00:00</div>
                 <div id="cooldown-message" style="font-size: clamp(1.2rem, 3.5vw, 1.5rem); color: #666; margin-bottom: 1.5rem; max-width: 90%; line-height: 1.5;"></div>
                 <div id="cooldown-action"></div>
             </div>
@@ -1978,7 +1981,7 @@
 
     <div id="guest-limit-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(250, 250, 250, 0.85); backdrop-filter: blur(12px); z-index: 1000; justify-content: center; align-items: center; font-family: 'Playpen Sans', cursive;">
     <div style="background: white; padding: 3rem; border-radius: 20px; text-align: center; max-width: 450px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.05);">
-        <h2 style="font-size: 2.5rem; margin-bottom: 0.5rem; margin-top: 0; background: linear-gradient(90deg, #cde8f1 50%, #e1daf3 50%); -webkit-background-clip: text; color: transparent;">The Oracle is Resting</h2>
+        <h2 style="font-size: 2.5rem; margin-bottom: 0.5rem; margin-top: 0; background: linear-gradient(90deg, #cde8f1 50%, #e1daf3 50%); -webkit-background-clip: text; color: transparent; font-weight: 600;">The Oracle is Resting</h2>
         <p style="font-size: 1.4rem; color: #666; margin-bottom: 2rem;">You are out of free guest readings for the next 1 hour.<br><br>Sign up now for unlimited free readings!</p>
         <button class="btn" style="width: 100%; margin: 0;" onclick="document.getElementById('guest-limit-modal').style.display='none'; window.Clerk.openSignUp();">Sign Up</button>
         <br>
@@ -1988,7 +1991,7 @@
 
     <div id="free-limit-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(250, 250, 250, 0.85); backdrop-filter: blur(12px); z-index: 1000; justify-content: center; align-items: center; font-family: 'Playpen Sans', cursive;">
         <div style="background: white; padding: 3rem; border-radius: 20px; text-align: center; max-width: 450px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.05);">
-            <h2 style="font-size: 2.5rem; margin-bottom: 0.5rem; margin-top: 0; background: linear-gradient(90deg, #cde8f1 50%, #e1daf3 50%); -webkit-background-clip: text; color: transparent;">Seek Deeper Wisdom</h2>
+            <h2 style="font-size: 2.5rem; margin-bottom: 0.5rem; margin-top: 0; background: linear-gradient(90deg, #cde8f1 50%, #e1daf3 50%); -webkit-background-clip: text; color: transparent; font-weight: 600;">Seek Deeper Wisdom</h2>
             <p style="font-size: 1.4rem; color: #666; margin-bottom: 2rem;">You are out of free readings for the next 30 minutes.<br><br>Wait for the stars to align, or Upgrade to Pro for unlimited access.</p>
             
             <!-- Primary Action: Annual Plan (Best Value Stacked Top) -->
