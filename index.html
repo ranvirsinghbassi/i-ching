@@ -793,16 +793,24 @@
                 margin-bottom: -0.18rem; 
             }
             .title-name {
-                display: block; 
-                font-size: clamp(3rem, 16vw, 5rem); 
-                line-height: 0.9; 
+                display: block;
+                font-size: clamp(3rem, 16vw, 5rem);
+                line-height: 0.9;
+                white-space: nowrap;
             }
             .hide-on-mobile {
                 display: none !important; 
             }
             .oracle-container {
                 /* Ensures the white tile clears both the tall and short title states */
-                margin-top: 14rem; 
+                margin-top: 14rem;
+            }
+            .btn-submit {
+                white-space: nowrap;
+                font-size: clamp(1rem, 4.2vw, 1.4rem);
+                letter-spacing: 0.05em;
+                padding-left: clamp(1rem, 4vw, 1.5rem);
+                padding-right: clamp(1rem, 4vw, 1.5rem);
             }
         }
 
@@ -928,6 +936,32 @@
         // Pro is on the back burner until a payment provider is live again.
         // Flip to true once that's wired up - it's the only change needed here.
         const PRO_ENABLED = false;
+
+        // Shrinks .title-name (the signed-in user's name in the header) so it
+        // always fits on a single line on mobile, regardless of name length.
+        // Desktop lays the name out inline with the prefix and isn't affected.
+        function fitTitleName() {
+            const el = document.querySelector('.title-name');
+            if (!el) return;
+            if (window.innerWidth > 650) {
+                el.style.fontSize = ''; // let desktop CSS take back over
+                return;
+            }
+            const maxWidth = window.innerWidth * 0.92;
+            const maxFontSize = parseFloat(getComputedStyle(el).fontSize);
+            let fontSize = maxFontSize;
+            el.style.fontSize = fontSize + 'px';
+            let iterations = 0;
+            while (el.scrollWidth > maxWidth && fontSize > 20 && iterations < 40) {
+                fontSize -= 1;
+                el.style.fontSize = fontSize + 'px';
+                iterations++;
+            }
+        }
+        window.addEventListener('resize', () => {
+            clearTimeout(window._fitTitleNameTimer);
+            window._fitTitleNameTimer = setTimeout(fitTitleName, 150);
+        });
 
         let currentLine = 1;
         let hexagramBinary = ""; 
@@ -1815,8 +1849,9 @@
                   
                   // NEW: Wrap the text in spans (with a space between them for desktop!)
                   headerTitle.innerHTML = `<span class="title-prefix">THE CHANGES OF</span> <span class="title-name">${firstName.toUpperCase()}</span>`;
-                  headerTitle.classList.add('long-title'); 
-                  
+                  headerTitle.classList.add('long-title');
+                  fitTitleName();
+
                   headerSubtitle.innerText = "Your Story Unfolds";
                   headerSubtitle.classList.add('hide-on-mobile'); // Hides this on mobile only!
                   
