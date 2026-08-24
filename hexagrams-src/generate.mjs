@@ -57,6 +57,9 @@ const PAGE_HEAD = ({ title, description, canonical }) => `<!doctype html>
   .cta p{color:#666}
   .btn{display:inline-block;margin-top:0.5rem;padding:0.7rem 2rem;border-radius:999px;background:var(--split);color:var(--text-black);text-decoration:none;font-size:1.4rem;font-weight:600}
   .prevnext{display:flex;justify-content:space-between;margin-top:3rem;font-size:1.3rem}
+  .related{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:0.7rem;margin-top:1rem}
+  .related a{display:flex;align-items:center;gap:0.6rem;background:#fff;border-radius:10px;padding:0.7rem 0.9rem;text-decoration:none;color:var(--text-black);box-shadow:0 2px 10px rgba(0,0,0,0.05);font-size:1.15rem}
+  .related .rsym{font-size:1.6rem}
   footer{margin-top:3rem;font-size:1.1rem;color:#999;text-align:center}
 </style>
 </head>
@@ -70,13 +73,21 @@ const PAGE_FOOT = `</div>
 </html>
 `;
 
-function hexagramPage(h, prev, next) {
+function relatedFor(h, all) {
+  // Spread related links across the whole set (not just neighbors) so the
+  // internal link graph reaches broadly rather than chaining locally -
+  // deterministic offsets keep this stable across regenerations.
+  const n = all.length;
+  const offsets = [8, 23, 41];
+  return offsets.map(off => all[(h.number - 1 + off) % n]);
+}
+
+function hexagramPage(h, prev, next, related) {
   const title = `Hexagram ${h.number}: ${h.name} (${h.pinyin}) - I Ching Meaning`;
   const description = `Hexagram ${h.number}, ${h.name} (${h.pinyin}): ${h.judgment}`;
   const canonical = `${SITE}/hexagrams/${h.slug}/`;
 
-  const structuredData = `<script type="application/ld+json">
-${JSON.stringify({
+  const breadcrumb = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     "itemListElement": [
@@ -84,8 +95,22 @@ ${JSON.stringify({
       { "@type": "ListItem", "position": 2, "name": "All 64 Hexagrams", "item": SITE + "/hexagrams/" },
       { "@type": "ListItem", "position": 3, "name": `Hexagram ${h.number}: ${h.name}`, "item": canonical }
     ]
-  }, null, 2)}
-</script>`;
+  };
+
+  const article = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": `Hexagram ${h.number}: ${h.name} (${h.pinyin})`,
+    "description": description,
+    "url": canonical,
+    "mainEntityOfPage": canonical,
+    "isPartOf": { "@type": "WebSite", "name": "The Book of Changes", "url": SITE + "/" }
+  };
+
+  const structuredData = `<script type="application/ld+json">${JSON.stringify(breadcrumb)}</script>
+<script type="application/ld+json">${JSON.stringify(article)}</script>`;
+
+  const relatedLinks = related.map(r => `<a href="/hexagrams/${r.slug}/"><span class="rsym" aria-hidden="true">${r.symbol}</span><span>${r.number}. ${r.name}</span></a>`).join("\n  ");
 
   return `${PAGE_HEAD({ title, description, canonical })}${structuredData}
 <div class="symbol" aria-hidden="true">${h.symbol}</div>
@@ -104,6 +129,11 @@ ${JSON.stringify({
 <div class="cta">
   <p>Curious how Hexagram ${h.number} applies to your own situation?</p>
   <a class="btn" href="/">Ask the Oracle a Question</a>
+</div>
+
+<h2>Related Hexagrams</h2>
+<div class="related">
+  ${relatedLinks}
 </div>
 
 <div class="prevnext">
@@ -126,7 +156,21 @@ function hubPage() {
     <span class="hex-info"><strong>${h.number}. ${h.name}</strong><span class="hex-pinyin">${h.pinyin}</span></span>
   </a>`).join("");
 
-  return `${PAGE_HEAD({ title, description, canonical })}
+  const itemList = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "The 64 I Ching Hexagrams",
+    "url": canonical,
+    "itemListElement": HEXAGRAMS.map(h => ({
+      "@type": "ListItem",
+      "position": h.number,
+      "name": `Hexagram ${h.number}: ${h.name}`,
+      "url": `${SITE}/hexagrams/${h.slug}/`
+    }))
+  };
+  const structuredData = `<script type="application/ld+json">${JSON.stringify(itemList)}</script>`;
+
+  return `${PAGE_HEAD({ title, description, canonical })}${structuredData}
 <h1 style="margin-bottom:0.3rem;">The 64 Hexagrams</h1>
 <p style="text-align:center;color:#666;margin-bottom:2.5rem;">The complete set of I Ching hexagrams, each a distinct pattern of change. Select one to read its traditional meaning, or return to the oracle to cast your own.</p>
 <div class="hex-grid">${items}
@@ -151,15 +195,17 @@ mkdirSync(HEX_DIR, { recursive: true });
 HEXAGRAMS.forEach((h, i) => {
   const prev = HEXAGRAMS[(i - 1 + HEXAGRAMS.length) % HEXAGRAMS.length];
   const next = HEXAGRAMS[(i + 1) % HEXAGRAMS.length];
+  const related = relatedFor(h, HEXAGRAMS);
   const dir = join(HEX_DIR, h.slug);
   mkdirSync(dir, { recursive: true });
-  writeFileSync(join(dir, "index.html"), hexagramPage(h, prev, next));
+  writeFileSync(join(dir, "index.html"), hexagramPage(h, prev, next, related));
 });
 
 // --- Generate hub page ---
 writeFileSync(join(HEX_DIR, "index.html"), hubPage());
 
 // --- Rewrite sitemap.xml with every URL ---
+const today = new Date().toISOString().slice(0, 10);
 const urls = [
   { loc: `${SITE}/`, priority: "1.0" },
   { loc: `${SITE}/hexagrams/`, priority: "0.8" },
@@ -168,9 +214,9 @@ const urls = [
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls.map(u => `  <url>\n    <loc>${u.loc}</loc>\n    <changefreq>monthly</changefreq>\n    <priority>${u.priority}</priority>\n  </url>`).join("\n")}
+${urls.map(u => `  <url>\n    <loc>${u.loc}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>${u.priority}</priority>\n  </url>`).join("\n")}
 </urlset>
 `;
 writeFileSync(join(ROOT, "sitemap.xml"), sitemap);
 
-console.log(`Generated ${HEXAGRAMS.length} hexagram pages + hub page + sitemap.xml (${urls.length} URLs).`);
+console.log(`Generated ${HEXAGRAMS.length} hexagram pages + hub page + sitemap.xml (${urls.length} URLs, lastmod ${today}).`);
