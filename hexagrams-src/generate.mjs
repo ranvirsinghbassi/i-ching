@@ -39,23 +39,23 @@ const PAGE_HEAD = ({ title, description, canonical }) => `<!doctype html>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%23FAFAFA' stroke='%231A1A1A' stroke-width='1.5'/%3E%3Crect x='8' y='10' width='16' height='3' fill='%231A1A1A'/%3E%3Crect x='8' y='15' width='6' height='3' fill='%231A1A1A'/%3E%3Crect x='18' y='15' width='6' height='3' fill='%231A1A1A'/%3E%3Crect x='8' y='20' width='16' height='3' fill='%231A1A1A'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@200;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@100&display=swap" rel="stylesheet">
 <style>
   *,*::before,*::after{box-sizing:border-box}
   :root{--text-black:#1A1A1A;--vibrant-blue:#cde8f1;--vibrant-red:#e1daf3;--split:linear-gradient(90deg,var(--vibrant-blue) 50%,var(--vibrant-red) 50%)}
-  body{font-family:'Playpen Sans',cursive;font-weight:200;background:#FAFAFA;color:var(--text-black);margin:0;padding:0 1.5rem 4rem;display:flex;flex-direction:column;align-items:center}
+  body{font-family:'Playpen Sans',cursive;font-weight:100;background:#FAFAFA;color:var(--text-black);margin:0;padding:0 1.5rem 4rem;display:flex;flex-direction:column;align-items:center}
   .wrap{max-width:720px;width:100%}
   a{color:var(--text-black)}
   .top-nav{padding:1.5rem 0;font-size:1.3rem}
   .top-nav a{text-decoration:none;border-bottom:1px solid rgba(26,26,26,0.25)}
   .symbol{font-size:5rem;text-align:center;line-height:1;margin:1rem 0}
-  h1{font-size:clamp(2.2rem,7vw,3.2rem);text-align:center;margin:0 0 0.2rem 0;background:var(--split);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;color:transparent;font-weight:700}
+  h1{font-size:clamp(2.2rem,7vw,3.2rem);text-align:center;margin:0 0 0.2rem 0;background:var(--split);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;color:transparent;font-weight:100}
   .pinyin{text-align:center;font-size:1.4rem;color:#777;margin-bottom:2.5rem}
   h2{font-size:1.7rem;margin:2.2rem 0 0.6rem 0}
   p{font-size:1.35rem;line-height:1.6;color:#444;margin:0 0 1rem 0}
   .cta{margin:3rem 0;padding:2rem;text-align:center;background:#fff;border-radius:16px;box-shadow:0 4px 30px rgba(0,0,0,0.06)}
   .cta p{color:#666}
-  .btn{display:inline-block;margin-top:0.5rem;padding:0.7rem 2rem;border-radius:999px;background:var(--split);color:var(--text-black);text-decoration:none;font-size:1.4rem;font-weight:600}
+  .btn{display:inline-block;margin-top:0.5rem;padding:0.7rem 2rem;border-radius:999px;background:var(--split);color:var(--text-black);text-decoration:none;font-size:1.4rem;font-weight:100}
   .prevnext{display:flex;justify-content:space-between;margin-top:3rem;font-size:1.3rem}
   .related{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:0.7rem;margin-top:1rem}
   .related a{display:flex;align-items:center;gap:0.6rem;background:#fff;border-radius:10px;padding:0.7rem 0.9rem;text-decoration:none;color:var(--text-black);box-shadow:0 2px 10px rgba(0,0,0,0.05);font-size:1.15rem}
