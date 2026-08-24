@@ -66,7 +66,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Shantell+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Kalam:wght@300;400;700&display=swap" rel="stylesheet">
 
     <style>
         *, *::before, *::after { box-sizing: border-box; }
@@ -79,21 +79,22 @@
             --blue-red-split: linear-gradient(90deg, var(--vibrant-blue) 50%, var(--vibrant-red) 50%);
             --blue-red-split-reverse: linear-gradient(90deg, var(--vibrant-red) 50%, var(--vibrant-blue) 50%);
             --pen-stroke-black: rgba(26, 26, 26, 0.95);
-            /* Shantell Sans everywhere for now (previewing it site-wide) -
-               a more polished, UI-oriented "organic" font vs. raw
-               handwriting fonts like Caveat/Patrick Hand. */
-            --font-body: 'Shantell Sans', cursive;
+            /* Kalam everywhere for now (previewing it site-wide) - a
+               connected cursive script like Caveat, just bolder and more
+               consistent stroke-to-stroke, so it's a smaller visual jump
+               from the original than the unconnected handwriting fonts. */
+            --font-body: 'Kalam', cursive;
         }
 
-        /* Shantell Sans is closer to normal UI sizing than the handwriting
-           fonts were, so this needs a smaller boost than Patrick Hand did -
-           starting conservative, easy to tune further from here. */
+        /* Kalam's x-height is a bit smaller than Caveat's, so still needs a
+           modest boost - less than Patrick Hand needed, since Kalam is
+           closer to Caveat's own proportions. */
         html {
-            font-size: 104%;
+            font-size: 106%;
         }
 
         body {
-            font-family: 'Shantell Sans', cursive;
+            font-family: 'Kalam', cursive;
             background-color: #FAFAFA; 
             margin: 0;
             padding: 0;
@@ -188,7 +189,7 @@
 
         .question-input {
             width: 100%;
-            font-family: 'Shantell Sans', cursive;
+            font-family: 'Kalam', cursive;
             font-size: clamp(1.4rem, 4vw, 1.8rem);
             color: var(--text-black);
             padding: 1rem 1.5rem;
@@ -331,7 +332,7 @@
         }
 
         .btn {
-            font-family: 'Shantell Sans', cursive;
+            font-family: 'Kalam', cursive;
             border-color: transparent;
             background: linear-gradient(var(--bg-white), var(--bg-white)) padding-box,
                         var(--blue-red-split) border-box;
@@ -376,7 +377,7 @@
         }
 
         .text-btn {
-            font-family: 'Shantell Sans', cursive;
+            font-family: 'Kalam', cursive;
             border: none;
             font-size: clamp(1.2rem, 3.5vw, 1.5rem);
             font-weight: 700;
@@ -478,7 +479,7 @@
             left: 50%;
             bottom: 30px;
             transform: translateX(-50%);
-            font-family: 'Shantell Sans', cursive;
+            font-family: 'Kalam', cursive;
             font-size: 1.5rem;
             opacity: 0;
             transition: opacity 0.3s, visibility 0.3s;
@@ -526,7 +527,7 @@
         }
 
         .auth-link {
-            font-family: 'Shantell Sans', cursive;
+            font-family: 'Kalam', cursive;
             color: #666; 
             text-decoration: none;
             font-size: clamp(1.2rem, 3vw, 1.4rem); 
@@ -550,7 +551,7 @@
         }
 
         .auth-link {
-            font-family: 'Shantell Sans', cursive;
+            font-family: 'Kalam', cursive;
             color: #666; 
             text-decoration: none;
             font-size: clamp(1.1rem, 3vw, 1.3rem); /* Slightly smaller than subtitle */
@@ -620,7 +621,7 @@
         }
 
         .history-card-title {
-            font-family: 'Shantell Sans', cursive;
+            font-family: 'Kalam', cursive;
             font-weight: 700;
             font-size: clamp(1.4rem, 4vw, 1.6rem);
             background: var(--blue-red-split);
@@ -641,7 +642,7 @@
         }
 
         .history-card-question {
-            font-family: 'Shantell Sans', cursive;
+            font-family: 'Kalam', cursive;
             font-size: clamp(1.1rem, 3vw, 1.3rem);
             color: #666;
             font-style: italic;
@@ -1870,7 +1871,7 @@
               signIn: { start: { subtitle: "By continuing, you agree to our Terms and consent to receive our monthly I Ching newsletter." } }
             },
             appearance: {
-              variables: { fontFamily: "'Shantell Sans', cursive", colorPrimary: "#e1daf3", colorText: "#1A1A1A", colorBackground: "#FAFAFA", colorInputBackground: "#FFFFFF", colorInputText: "#1A1A1A", borderRadius: "12px" },
+              variables: { fontFamily: "'Kalam', cursive", colorPrimary: "#e1daf3", colorText: "#1A1A1A", colorBackground: "#FAFAFA", colorInputBackground: "#FFFFFF", colorInputText: "#1A1A1A", borderRadius: "12px" },
               elements: { card: { boxShadow: "0 4px 30px rgba(0, 0, 0, 0.08)" }, headerTitle: { fontSize: "2.5rem" }, headerSubtitle: { fontSize: "1.1rem" } }
             }
           });
@@ -1951,7 +1952,7 @@
     </script>
     
 
-    <div id="guest-limit-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(250, 250, 250, 0.85); backdrop-filter: blur(12px); z-index: 1000; justify-content: center; align-items: center; font-family: 'Shantell Sans', cursive;">
+    <div id="guest-limit-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(250, 250, 250, 0.85); backdrop-filter: blur(12px); z-index: 1000; justify-content: center; align-items: center; font-family: 'Kalam', cursive;">
     <div style="background: white; padding: 3rem; border-radius: 20px; text-align: center; max-width: 450px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.05);">
         <h2 style="font-size: 2.5rem; margin-bottom: 0.5rem; margin-top: 0; background: linear-gradient(90deg, #cde8f1 50%, #e1daf3 50%); -webkit-background-clip: text; color: transparent;">The Oracle is Resting</h2>
         <p style="font-size: 1.4rem; color: #666; margin-bottom: 2rem;">You are out of free guest readings for the next 1 hour.<br><br>Sign up now for unlimited free readings!</p>
@@ -1961,7 +1962,7 @@
     </div>
     </div>
 
-    <div id="free-limit-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(250, 250, 250, 0.85); backdrop-filter: blur(12px); z-index: 1000; justify-content: center; align-items: center; font-family: 'Shantell Sans', cursive;">
+    <div id="free-limit-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(250, 250, 250, 0.85); backdrop-filter: blur(12px); z-index: 1000; justify-content: center; align-items: center; font-family: 'Kalam', cursive;">
         <div style="background: white; padding: 3rem; border-radius: 20px; text-align: center; max-width: 450px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.05);">
             <h2 style="font-size: 2.5rem; margin-bottom: 0.5rem; margin-top: 0; background: linear-gradient(90deg, #cde8f1 50%, #e1daf3 50%); -webkit-background-clip: text; color: transparent;">Seek Deeper Wisdom</h2>
             <p style="font-size: 1.4rem; color: #666; margin-bottom: 2rem;">You are out of free readings for the next 30 minutes.<br><br>Wait for the stars to align, or Upgrade to Pro for unlimited access.</p>

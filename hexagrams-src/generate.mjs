@@ -39,12 +39,12 @@ const PAGE_HEAD = ({ title, description, canonical }) => `<!doctype html>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%23FAFAFA' stroke='%231A1A1A' stroke-width='1.5'/%3E%3Crect x='8' y='10' width='16' height='3' fill='%231A1A1A'/%3E%3Crect x='8' y='15' width='6' height='3' fill='%231A1A1A'/%3E%3Crect x='18' y='15' width='6' height='3' fill='%231A1A1A'/%3E%3Crect x='8' y='20' width='16' height='3' fill='%231A1A1A'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Shantell+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Kalam:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
   *,*::before,*::after{box-sizing:border-box}
-  :root{--text-black:#1A1A1A;--vibrant-blue:#cde8f1;--vibrant-red:#e1daf3;--split:linear-gradient(90deg,var(--vibrant-blue) 50%,var(--vibrant-red) 50%);--font-body:'Shantell Sans',cursive}
-  html{font-size:104%}
-  body{font-family:'Shantell Sans',cursive;background:#FAFAFA;color:var(--text-black);margin:0;padding:0 1.5rem 4rem;display:flex;flex-direction:column;align-items:center}
+  :root{--text-black:#1A1A1A;--vibrant-blue:#cde8f1;--vibrant-red:#e1daf3;--split:linear-gradient(90deg,var(--vibrant-blue) 50%,var(--vibrant-red) 50%);--font-body:'Kalam',cursive}
+  html{font-size:106%}
+  body{font-family:'Kalam',cursive;background:#FAFAFA;color:var(--text-black);margin:0;padding:0 1.5rem 4rem;display:flex;flex-direction:column;align-items:center}
   .wrap{max-width:720px;width:100%}
   a{color:var(--text-black)}
   .top-nav{padding:1.5rem 0;font-size:1.3rem}
