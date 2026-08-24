@@ -343,7 +343,7 @@
             color: var(--text-black);
             border-style: solid;
             border-width: 1.5px 2px 2.5px 1px;
-            border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px; 
+            border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
             padding: clamp(0.6rem, 2vw, 0.8rem) clamp(1.5rem, 5vw, 2.5rem);
             font-size: clamp(1.4rem, 4vw, 1.8rem);
             font-weight: 100;
@@ -352,6 +352,12 @@
             cursor: pointer;
             transition: all 0.4s ease;
             margin: 0.5rem;
+            /* Flexbox centering instead of relying on text-align, which
+               reads visually off-center with letter-spacing + this font. */
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
         }
 
         .btn:hover, .btn:active { 
@@ -392,7 +398,10 @@
             visibility: hidden;
             pointer-events: none;
             position: fixed;
-            bottom: clamp(1rem, 4vw, 2rem);
+            /* Sits just under the top-right sign-in/sign-out pill (which
+               tops out around ~3.9rem: 1.5rem top + ~2.4rem of its own
+               height), centered like the real button's own position. */
+            top: clamp(4.5rem, 14vw, 5.5rem);
             left: 50%;
             transform: translateX(-50%);
             z-index: 90;
@@ -871,13 +880,6 @@
                 padding-left: clamp(1rem, 4vw, 1.5rem);
                 padding-right: clamp(1rem, 4vw, 1.5rem);
             }
-            .floating-ask-btn {
-                width: 88%;
-                text-align: center;
-                letter-spacing: 0.02em;
-                padding-left: clamp(1rem, 4vw, 1.5rem);
-                padding-right: clamp(1rem, 4vw, 1.5rem);
-            }
             .question-label {
                 display: block;
                 width: 100%;
@@ -922,7 +924,7 @@
             <div class="question-section" id="question-section">
                 <div class="question-label">Dear, ask your question...</div>
                 <textarea id="user-question" class="question-input" rows="3" placeholder="Type anything on your mind&mdash;love, work, a decision..."></textarea>
-                <button class="btn btn-submit" onclick="startReading()">Submit Your Question</button>
+                <button id="submit-question-btn" class="btn btn-submit" onclick="startReading()">Submit Your Question</button>
             </div>
     
             <div class="hexagram-display" id="hexagram" style="display:none;"></div>
@@ -1000,7 +1002,7 @@
         </div>
     </div>
 
-    <button id="floating-ask-btn" class="btn floating-ask-btn" onclick="scrollToQuestionBox()">Ask Your Question</button>
+    <button id="floating-ask-btn" class="btn btn-submit floating-ask-btn" onclick="scrollToQuestionBox()">Ask Your Question</button>
 
     <div id="toast">Link copied to clipboard!</div>
 
@@ -1051,7 +1053,7 @@
 
         function fitAllMobileText() {
             fitTitleName();
-            fitTextToOneLine(document.querySelector('.btn-submit'), 12, 40);
+            fitTextToOneLine(document.getElementById('submit-question-btn'), 12, 40);
             fitTextToOneLine(document.getElementById('floating-ask-btn'), 12, 40);
             fitTextToOneLine(document.querySelector('.question-label'), 12, 48);
             // Plain signed-out "I CHING" heading - the signed-in name (with
