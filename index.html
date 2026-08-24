@@ -502,6 +502,14 @@
             text-align: justify;
             color: #444;
         }
+
+        .desc-sentence {
+            margin: 0 0 1em 0;
+        }
+
+        .desc-sentence:last-child {
+            margin-bottom: 0;
+        }
         
         #toast {
             visibility: hidden;
@@ -1823,16 +1831,19 @@
             containerElement.innerHTML = '';
             const tokens = text.match(/\S+|\s+/g) || [];
 
-            // Poem lines each get their own block (instead of a flat <br>
-            // between them) so text-wrap: balance can balance each line on
-            // its own if it's too long to fit in one row, rather than
-            // stranding a lone trailing word by itself.
-            let target = containerElement;
-            if (isPoem) {
-                target = document.createElement('div');
-                target.className = 'poem-line';
-                containerElement.appendChild(target);
-            }
+            // Poem lines get their own block (instead of a flat <br> between
+            // them) so text-wrap: balance can balance each line on its own
+            // if it's too long to fit in one row, rather than stranding a
+            // lone trailing word by itself. Description text gets the same
+            // treatment but split into sentences, so the reading renders as
+            // separate paragraphs instead of one dense block of prose.
+            const startNewBlock = () => {
+                const el = document.createElement(isPoem ? 'div' : 'p');
+                el.className = isPoem ? 'poem-line' : 'desc-sentence';
+                containerElement.appendChild(el);
+                return el;
+            };
+            let target = startNewBlock();
 
             tokens.forEach(token => {
                 if (/\S/.test(token)) {
@@ -1841,25 +1852,28 @@
                     span.innerText = token;
                     target.appendChild(span);
                     ttsWordSpans.push({ element: span, start: currentOffset, end: currentOffset + token.length });
-                } else {
-                    // We removed "isPoem &&" here so the description can use \n\n for paragraphs!
-                    if (token.includes('\n')) {
-                        const newlines = (token.match(/\n/g) || []).length;
-                        for(let i = 0; i < newlines; i++) {
-                            if (isPoem) {
-                                target = document.createElement('div');
-                                target.className = 'poem-line';
-                                containerElement.appendChild(target);
-                            } else {
-                                containerElement.appendChild(document.createElement('br'));
-                            }
-                        }
-                    } else {
-                        target.appendChild(document.createTextNode(token));
+
+                    // Description only: start a fresh paragraph right after
+                    // a sentence-ending word, but not after an ellipsis
+                    // (which trails off rather than ending a thought).
+                    if (!isPoem && /[.!?]['")\]]*$/.test(token) && !token.endsWith('...')) {
+                        target = startNewBlock();
                     }
+                } else if (token.includes('\n')) {
+                    const newlines = (token.match(/\n/g) || []).length;
+                    for (let i = 0; i < newlines; i++) {
+                        target = startNewBlock();
+                    }
+                } else {
+                    target.appendChild(document.createTextNode(token));
                 }
                 currentOffset += token.length;
             });
+
+            // A trailing sentence-end (or \n) leaves one empty block dangling.
+            if (target.childNodes.length === 0) {
+                containerElement.removeChild(target);
+            }
 
             return currentOffset;
         }
