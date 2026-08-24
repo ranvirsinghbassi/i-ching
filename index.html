@@ -79,14 +79,21 @@
             --blue-red-split: linear-gradient(90deg, var(--vibrant-blue) 50%, var(--vibrant-red) 50%);
             --blue-red-split-reverse: linear-gradient(90deg, var(--vibrant-red) 50%, var(--vibrant-blue) 50%);
             --pen-stroke-black: rgba(26, 26, 26, 0.95);
-            /* Patrick Hand for longer paragraphs - natural handwriting like
-               Caveat, but unconnected letterforms read far easier at length.
-               Headings/labels/buttons stay in Caveat. */
+            /* Patrick Hand everywhere for now (previewing it site-wide) -
+               natural handwriting like Caveat, but unconnected letterforms
+               read far easier at length. */
             --font-body: 'Patrick Hand', cursive;
         }
 
+        /* Patrick Hand has a smaller apparent size than Caveat at the same
+           declared font-size (smaller x-height), so scale the whole site's
+           rem-based sizing up to compensate. */
+        html {
+            font-size: 115%;
+        }
+
         body {
-            font-family: 'Caveat', cursive;
+            font-family: 'Patrick Hand', cursive;
             background-color: #FAFAFA; 
             margin: 0;
             padding: 0;
@@ -181,7 +188,7 @@
 
         .question-input {
             width: 100%;
-            font-family: 'Caveat', cursive;
+            font-family: 'Patrick Hand', cursive;
             font-size: clamp(1.4rem, 4vw, 1.8rem);
             color: var(--text-black);
             padding: 1rem 1.5rem;
@@ -324,7 +331,7 @@
         }
 
         .btn {
-            font-family: 'Caveat', cursive;
+            font-family: 'Patrick Hand', cursive;
             border-color: transparent;
             background: linear-gradient(var(--bg-white), var(--bg-white)) padding-box,
                         var(--blue-red-split) border-box;
@@ -369,7 +376,7 @@
         }
 
         .text-btn {
-            font-family: 'Caveat', cursive;
+            font-family: 'Patrick Hand', cursive;
             border: none;
             font-size: clamp(1.2rem, 3.5vw, 1.5rem);
             font-weight: 700;
@@ -407,7 +414,7 @@
         
         .reading-question-display {
             font-family: var(--font-body);
-            font-size: clamp(1rem, 2.8vw, 1.2rem);
+            font-size: clamp(1.3rem, 3.8vw, 1.6rem);
             font-style: italic;
             margin-bottom: 2rem;
             color: #666;
@@ -434,7 +441,7 @@
 
         .reading-poem {
             font-family: var(--font-body);
-            font-size: clamp(1.05rem, 3.2vw, 1.5rem);
+            font-size: clamp(1.3rem, 4.3vw, 2.1rem);
             line-height: 1.6;
             margin: 2rem 0;
             text-align: center;
@@ -445,7 +452,7 @@
 
         .reading-desc {
             font-family: var(--font-body);
-            font-size: clamp(1.05rem, 3.6vw, 1.25rem);
+            font-size: clamp(1.4rem, 4.8vw, 1.7rem);
             line-height: 1.7;
             text-align: justify;
             color: #444;
@@ -464,7 +471,7 @@
             left: 50%;
             bottom: 30px;
             transform: translateX(-50%);
-            font-family: 'Caveat', cursive;
+            font-family: 'Patrick Hand', cursive;
             font-size: 1.5rem;
             opacity: 0;
             transition: opacity 0.3s, visibility 0.3s;
@@ -512,7 +519,7 @@
         }
 
         .auth-link {
-            font-family: 'Caveat', cursive;
+            font-family: 'Patrick Hand', cursive;
             color: #666; 
             text-decoration: none;
             font-size: clamp(1.2rem, 3vw, 1.4rem); 
@@ -536,7 +543,7 @@
         }
 
         .auth-link {
-            font-family: 'Caveat', cursive;
+            font-family: 'Patrick Hand', cursive;
             color: #666; 
             text-decoration: none;
             font-size: clamp(1.1rem, 3vw, 1.3rem); /* Slightly smaller than subtitle */
@@ -606,7 +613,7 @@
         }
 
         .history-card-title {
-            font-family: 'Caveat', cursive;
+            font-family: 'Patrick Hand', cursive;
             font-weight: 700;
             font-size: clamp(1.4rem, 4vw, 1.6rem);
             background: var(--blue-red-split);
@@ -627,7 +634,7 @@
         }
 
         .history-card-question {
-            font-family: 'Caveat', cursive;
+            font-family: 'Patrick Hand', cursive;
             font-size: clamp(1.1rem, 3vw, 1.3rem);
             color: #666;
             font-style: italic;
@@ -693,7 +700,7 @@
         
         .seo-container p {
             font-family: var(--font-body);
-            font-size: clamp(1.05rem, 3vw, 1.2rem);
+            font-size: clamp(1.4rem, 4.3vw, 1.7rem);
             line-height: 1.7;
             color: #666; /* Softer grey so the colored heading pops */
             margin: 0 0 1.5rem 0;
@@ -738,7 +745,7 @@
         .faq-item p {
             font-family: var(--font-body);
             margin: 0.8rem 0 0 0;
-            font-size: clamp(0.95rem, 2.6vw, 1.05rem);
+            font-size: clamp(1.2rem, 3.4vw, 1.4rem);
             line-height: 1.6;
         }
 
@@ -1821,7 +1828,7 @@
               signIn: { start: { subtitle: "By continuing, you agree to our Terms and consent to receive our monthly I Ching newsletter." } }
             },
             appearance: {
-              variables: { fontFamily: "'Caveat', cursive", colorPrimary: "#e1daf3", colorText: "#1A1A1A", colorBackground: "#FAFAFA", colorInputBackground: "#FFFFFF", colorInputText: "#1A1A1A", borderRadius: "12px" },
+              variables: { fontFamily: "'Patrick Hand', cursive", colorPrimary: "#e1daf3", colorText: "#1A1A1A", colorBackground: "#FAFAFA", colorInputBackground: "#FFFFFF", colorInputText: "#1A1A1A", borderRadius: "12px" },
               elements: { card: { boxShadow: "0 4px 30px rgba(0, 0, 0, 0.08)" }, headerTitle: { fontSize: "2.5rem" }, headerSubtitle: { fontSize: "1.1rem" } }
             }
           });
@@ -1902,7 +1909,7 @@
     </script>
     
 
-    <div id="guest-limit-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(250, 250, 250, 0.85); backdrop-filter: blur(12px); z-index: 1000; justify-content: center; align-items: center; font-family: 'Caveat', cursive;">
+    <div id="guest-limit-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(250, 250, 250, 0.85); backdrop-filter: blur(12px); z-index: 1000; justify-content: center; align-items: center; font-family: 'Patrick Hand', cursive;">
     <div style="background: white; padding: 3rem; border-radius: 20px; text-align: center; max-width: 450px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.05);">
         <h2 style="font-size: 2.5rem; margin-bottom: 0.5rem; margin-top: 0; background: linear-gradient(90deg, #cde8f1 50%, #e1daf3 50%); -webkit-background-clip: text; color: transparent;">The Oracle is Resting</h2>
         <p style="font-size: 1.4rem; color: #666; margin-bottom: 2rem;">You are out of free guest readings for the next 1 hour.<br><br>Sign up now for unlimited free readings!</p>
@@ -1912,7 +1919,7 @@
     </div>
     </div>
 
-    <div id="free-limit-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(250, 250, 250, 0.85); backdrop-filter: blur(12px); z-index: 1000; justify-content: center; align-items: center; font-family: 'Caveat', cursive;">
+    <div id="free-limit-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(250, 250, 250, 0.85); backdrop-filter: blur(12px); z-index: 1000; justify-content: center; align-items: center; font-family: 'Patrick Hand', cursive;">
         <div style="background: white; padding: 3rem; border-radius: 20px; text-align: center; max-width: 450px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.05);">
             <h2 style="font-size: 2.5rem; margin-bottom: 0.5rem; margin-top: 0; background: linear-gradient(90deg, #cde8f1 50%, #e1daf3 50%); -webkit-background-clip: text; color: transparent;">Seek Deeper Wisdom</h2>
             <p style="font-size: 1.4rem; color: #666; margin-bottom: 2rem;">You are out of free readings for the next 30 minutes.<br><br>Wait for the stars to align, or Upgrade to Pro for unlimited access.</p>
