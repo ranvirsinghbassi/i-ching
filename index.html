@@ -77,6 +77,7 @@
             --vibrant-blue: #cde8f1;
             --vibrant-red: #e1daf3;
             --blue-red-split: linear-gradient(90deg, var(--vibrant-blue) 50%, var(--vibrant-red) 50%);
+            --blue-red-split-reverse: linear-gradient(90deg, var(--vibrant-red) 50%, var(--vibrant-blue) 50%);
             --pen-stroke-black: rgba(26, 26, 26, 0.95);
         }
 
@@ -345,7 +346,24 @@
         }
         
         .btn:disabled { opacity: 0.5; pointer-events: none; }
-        
+
+        /* Submit-question button only: filled gradient by default (not just
+           an outline), with the gradient sides swapping on hover. Text stays
+           black throughout for legibility against the pale gradient. */
+        .btn.btn-submit {
+            background: var(--blue-red-split) padding-box,
+                        var(--blue-red-split) border-box;
+            color: var(--text-black);
+            -webkit-text-fill-color: var(--text-black);
+        }
+
+        .btn.btn-submit:hover, .btn.btn-submit:active {
+            background: var(--blue-red-split-reverse) padding-box,
+                        var(--blue-red-split-reverse) border-box;
+            color: var(--text-black);
+            -webkit-text-fill-color: var(--text-black);
+        }
+
         .text-btn {
             font-family: 'Caveat', cursive;
             border: none;
@@ -825,7 +843,7 @@
             <div class="question-section" id="question-section">
                 <div class="question-label">Dear, ask your question...</div>
                 <textarea id="user-question" class="question-input" rows="3" placeholder="Type anything on your mind&mdash;love, work, a decision..."></textarea>
-                <button class="btn" onclick="startReading()">Submit Your Question</button>
+                <button class="btn btn-submit" onclick="startReading()">Submit Your Question</button>
             </div>
     
             <div class="hexagram-display" id="hexagram" style="display:none;"></div>
