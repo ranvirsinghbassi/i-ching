@@ -833,10 +833,12 @@
                 white-space: nowrap;
                 width: 88%;
                 text-align: center;
-                font-size: clamp(1.2rem, 5.8vw, 1.6rem);
-                letter-spacing: 0.05em;
+                letter-spacing: 0.02em;
                 padding-left: clamp(1rem, 4vw, 1.5rem);
                 padding-right: clamp(1rem, 4vw, 1.5rem);
+            }
+            .question-label {
+                white-space: nowrap;
             }
         }
 
@@ -963,24 +965,21 @@
         // Flip to true once that's wired up - it's the only change needed here.
         const PRO_ENABLED = false;
 
-        // Sizes .title-name (the signed-in user's name in the header) to fill
-        // most of the width on a single line on mobile - grows short names up
-        // and shrinks long ones down, rather than only ever shrinking from
-        // whatever size the CSS clamp happened to produce.
-        // Desktop lays the name out inline with the prefix and isn't affected.
-        function fitTitleName() {
-            const el = document.querySelector('.title-name');
+        // Shrinks (or grows) an element's font-size on mobile until its text
+        // fits its own rendered width on one line, instead of guessing a
+        // static CSS value that breaks every time the font/text changes.
+        // Desktop is left alone (returns the element to its CSS-defined size).
+        function fitTextToOneLine(el, minPx, maxPx) {
             if (!el) return;
             if (window.innerWidth > 650) {
                 el.style.fontSize = ''; // let desktop CSS take back over
                 return;
             }
-            const maxWidth = window.innerWidth * 0.94;
-            let lo = 20, hi = 160, best = lo;
+            let lo = minPx, hi = maxPx, best = lo;
             for (let i = 0; i < 20; i++) {
                 const mid = (lo + hi) / 2;
                 el.style.fontSize = mid + 'px';
-                if (el.scrollWidth <= maxWidth) {
+                if (el.scrollWidth <= el.clientWidth) {
                     best = mid;
                     lo = mid;
                 } else {
@@ -989,10 +988,29 @@
             }
             el.style.fontSize = best + 'px';
         }
+
+        function fitTitleName() {
+            fitTextToOneLine(document.querySelector('.title-name'), 20, 160);
+        }
+
+        function fitAllMobileText() {
+            fitTitleName();
+            fitTextToOneLine(document.querySelector('.btn-submit'), 12, 40);
+            fitTextToOneLine(document.querySelector('.question-label'), 12, 48);
+        }
+
         window.addEventListener('resize', () => {
-            clearTimeout(window._fitTitleNameTimer);
-            window._fitTitleNameTimer = setTimeout(fitTitleName, 150);
+            clearTimeout(window._fitTextTimer);
+            window._fitTextTimer = setTimeout(fitAllMobileText, 150);
         });
+
+        // Text is initially measured in the fallback font while the real
+        // webfont is still loading (display=swap) - refit once it's ready so
+        // the final sizing matches the font that's actually shown.
+        if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(fitAllMobileText);
+        }
+        fitAllMobileText();
 
         let currentLine = 1;
         let hexagramBinary = ""; 
